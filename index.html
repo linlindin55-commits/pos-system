@@ -65,7 +65,6 @@
         <i class="fa-solid fa-circle-question"></i> 門市問題解答知識庫
       </button>
 
-      <!-- 管理者 (a0948 或 a0909) 顯示此頁籤 -->
       <button v-if="isAdmin" @click="activeTab = 'dashboard'" :class="activeTab === 'dashboard' ? 'bg-indigo-50 text-indigo-600 font-bold' : 'text-slate-500'" class="flex-1 py-2.5 rounded-md text-sm transition flex justify-center items-center gap-2 cursor-pointer">
         <i class="fa-solid fa-chart-pie"></i> 後台：門市查詢儀表板
       </button>
@@ -134,7 +133,7 @@
           </div>
         </div>
 
-        <!-- 統計數據與跨裝置同步工具欄 -->
+        <!-- 統計數據與匯出/清空按鈕 (已移除備份與匯入) -->
         <div class="bg-white p-4 rounded-xl border shadow-sm space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div>
@@ -147,22 +146,12 @@
             </div>
           </div>
 
-          <!-- 匯出與跨裝置同步按鈕 -->
-          <div class="pt-3 border-t flex flex-wrap justify-between items-center gap-2 text-xs">
-            <div class="flex gap-2">
-              <button @click="exportToExcel" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1.5 cursor-pointer">
-                <i class="fa-solid fa-file-excel"></i> 匯出 Excel
-              </button>
-              <button @click="backupData" class="bg-indigo-50 text-indigo-600 hover:bg-indigo-100 font-bold px-3 py-1.5 rounded-lg border border-indigo-200 transition flex items-center gap-1.5 cursor-pointer">
-                <i class="fa-solid fa-download"></i> 備份紀錄 (JSON)
-              </button>
-              <label class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-1.5 rounded-lg border border-slate-300 transition flex items-center gap-1.5 cursor-pointer">
-                <i class="fa-solid fa-upload"></i> 匯入紀錄
-                <input type="file" @change="restoreData" accept=".json" class="hidden">
-              </label>
-            </div>
+          <div class="pt-3 border-t flex justify-between items-center text-xs">
+            <button @click="exportToExcel" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-file-excel"></i> 匯出 Excel 報表
+            </button>
             <button @click="clearAllLogs" class="bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white font-bold px-3 py-1.5 rounded-lg border border-rose-200 transition flex items-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-trash-can"></i> 清空紀錄
+              <i class="fa-solid fa-trash-can"></i> 清空所有查詢紀錄
             </button>
           </div>
         </div>
@@ -269,7 +258,6 @@
         const startDate = ref('');
         const endDate = ref('');
 
-        // 管理者權限判定清單 (包含 a0948 與新增的 a0909)
         const adminList = ['a0948', 'a0909'];
         const isAdmin = computed(() => {
           const sName = currentStore.value.trim();
@@ -280,6 +268,9 @@
         const expandedStores = ref({});
         const queryLogs = ref([]);
         const missingKeywords = ref([]);
+
+        // 填入您剛剛部署的 Google Apps Script 網頁應用程式網址
+        const GAS_API_URL = 'https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbypGLMe_5UjgSK2LeF6I9d_FFshjXXMwdHfGltaJB-VQMjRnCtZfPSxPCQdRmeWoj4/exec/exec';
 
         const categories = ['出單與印表機', '網路與連線', '肚肚後台與菜單', '發票與錢箱'];
 
@@ -319,26 +310,41 @@
           }
         ]);
 
-        onMounted(() => {
+        // 從雲端讀取紀錄
+        const fetchLogsFromCloud = async () => {
+          if (!GAS_API_URL || GAS_API_URL.includes('您的GAS部署網址')) return;
           try {
-            const savedLogs = localStorage.getItem('pos_query_logs');
-            if (savedLogs) queryLogs.value = JSON.parse(savedLogs);
-
-            const savedMissing = localStorage.getItem('pos_missing_keywords');
-            if (savedMissing) missingKeywords.value = JSON.parse(savedMissing);
+            const res = await fetch(`${GAS_API_URL}?action=get`);
+            const data = await res.json();
+            if (data.queryLogs) queryLogs.value = data.queryLogs;
+            if (data.missingKeywords) missingKeywords.value = data.missingKeywords;
           } catch (e) {
-            console.error('LocalStorage 讀取失敗', e);
-          }
-        });
-
-        const saveLogs = () => {
-          try {
-            localStorage.setItem('pos_query_logs', JSON.stringify(queryLogs.value));
-            localStorage.setItem('pos_missing_keywords', JSON.stringify(missingKeywords.value));
-          } catch (e) {
-            console.error('LocalStorage 寫入失敗', e);
+            console.error('雲端讀取失敗', e);
           }
         };
+
+        // 同步寫入雲端
+        const saveLogsToCloud = async () => {
+          if (!GAS_API_URL || GAS_API_URL.includes('您的GAS部署網址')) return;
+          try {
+            const payload = {
+              queryLogs: queryLogs.value,
+              missingKeywords: missingKeywords.value
+            };
+            await fetch(GAS_API_URL, {
+              method: 'POST',
+              mode: 'no-cors',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+          } catch (e) {
+            console.error('雲端寫入失敗', e);
+          }
+        };
+
+        onMounted(async () => {
+          await fetchLogsFromCloud();
+        });
 
         const loginStore = () => {
           const sName = loginForm.value.storeName ? loginForm.value.storeName.trim() : '';
@@ -354,6 +360,7 @@
 
           if (adminList.includes(sName) && adminList.includes(sRep)) {
             activeTab.value = 'dashboard';
+            fetchLogsFromCloud(); // 管理者進入後台時重新抓取最新雲端紀錄
           } else {
             activeTab.value = 'faq';
           }
@@ -378,7 +385,7 @@
           });
         });
 
-        const handleSearchSubmit = () => {
+        const handleSearchSubmit = async () => {
           const query = searchQuery.value.trim();
           if (!query || isAdmin.value) return;
 
@@ -392,7 +399,7 @@
               reporter: currentReporter.value,
               time: dateStr
             });
-            saveLogs();
+            await saveLogsToCloud();
           }
         };
 
@@ -459,12 +466,11 @@
 
         const clearDateFilter = () => { startDate.value = ''; endDate.value = ''; };
 
-        const clearAllLogs = () => {
+        const clearAllLogs = async () => {
           if (confirm('⚠️ 警告：確定要清空「所有的門市查詢紀錄」嗎？此動作無法復原！')) {
             queryLogs.value = [];
             missingKeywords.value = [];
-            localStorage.removeItem('pos_query_logs');
-            localStorage.removeItem('pos_missing_keywords');
+            await saveLogsToCloud();
             alert('已成功清空！');
           }
         };
@@ -476,7 +482,7 @@
 
         const isExpanded = (date, storeName) => !!expandedStores.value[`${date}_${storeName}`];
 
-        const openFaqModal = (item) => {
+        const openFaqModal = async (item) => {
           activeFaq.value = item;
           if (isAdmin.value) return; // 管理者瀏覽不記錄
 
@@ -493,7 +499,7 @@
             keyword: searchQuery.value.trim() || '直接點擊查詢',
             dateOnly, timeOnly
           });
-          saveLogs();
+          await saveLogsToCloud();
         };
 
         const exportToExcel = () => {
@@ -510,42 +516,13 @@
           document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
         };
 
-        // 備份紀錄檔 (JSON) 供跨裝置匯入
-        const backupData = () => {
-          const data = { queryLogs: queryLogs.value, missingKeywords: missingKeywords.value };
-          const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a'); a.href = url;
-          a.download = `POS_Backup_${new Date().toISOString().slice(0, 10)}.json`;
-          document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        };
-
-        // 匯入紀錄檔 (JSON)
-        const restoreData = (e) => {
-          const file = e.target.files[0];
-          if (!file) return;
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            try {
-              const data = JSON.parse(event.target.result);
-              if (data.queryLogs) queryLogs.value = data.queryLogs;
-              if (data.missingKeywords) missingKeywords.value = data.missingKeywords;
-              saveLogs();
-              alert('紀錄匯入完成！');
-            } catch (err) {
-              alert('檔案格式不正確！');
-            }
-          };
-          reader.readAsText(file);
-        };
-
         return {
           activeTab, searchQuery, selectedCategory, categories, faqs, filteredFaqs,
           currentStore, currentReporter, loginForm, loginError, loginStore, logoutStore,
           queryLogs, missingKeywords, filteredLogs, filteredUniqueStoresCount, groupedLogs,
           toggleStoreExpand, isExpanded, activeFaq, openFaqModal, isAdmin,
           startDate, endDate, setQuickDate, clearDateFilter, clearAllLogs,
-          handleSearchSubmit, exportToExcel, backupData, restoreData
+          handleSearchSubmit, exportToExcel
         };
       }
     }).mount('#app');
