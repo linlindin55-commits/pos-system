@@ -312,7 +312,7 @@
 
         // 從雲端讀取紀錄
         const fetchLogsFromCloud = async () => {
-          if (!GAS_API_URL || GAS_API_URL.includes('您的GAS部署網址')) return;
+          if (!GAS_API_URL || GAS_API_URL.includes('https://script.google.com/macros/s/AKfycbzQ_ooBGr3TImIhjfBPzOv2o13-IfR-2YxhLU_DtA/dev')) return;
           try {
             const res = await fetch(`${GAS_API_URL}?action=get`);
             const data = await res.json();
@@ -325,7 +325,7 @@
 
         // 同步寫入雲端
         const saveLogsToCloud = async () => {
-          if (!GAS_API_URL || GAS_API_URL.includes('您的GAS部署網址')) return;
+          if (!GAS_API_URL || GAS_API_URL.includes('https://script.google.com/macros/s/AKfycbzQ_ooBGr3TImIhjfBPzOv2o13-IfR-2YxhLU_DtA/dev')) return;
           try {
             const payload = {
               queryLogs: queryLogs.value,
