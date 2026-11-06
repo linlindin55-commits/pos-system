@@ -20,7 +20,7 @@
             <i class="fa-solid fa-store"></i>
           </div>
           <h2 class="text-lg font-bold text-slate-800">歡迎使用門市後援站</h2>
-          <p class="text-xs text-slate-500 mt-1">請輸入您的門市名稱與名字</p>
+          <p class="text-xs text-slate-500 mt-1">請輸入您的門市名稱與暱稱</p>
         </div>
         <div class="space-y-4">
           <div>
@@ -28,7 +28,7 @@
             <input v-model="loginForm.storeName" type="text" placeholder="例：台南南區概念店" class="w-full p-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">您的名字</label>
+            <label class="block text-xs font-bold text-slate-600 mb-1">您的暱稱</label>
             <input v-model="loginForm.reporter" type="text" placeholder="例：陳店長" class="w-full p-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
           </div>
           <p v-if="loginError && !showAdminLogin" class="text-xs text-rose-500 font-bold text-center">{{ loginErrorMessage }}</p>
