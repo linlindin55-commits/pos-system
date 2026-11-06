@@ -373,7 +373,7 @@
             }
             queryLogs.value = Array.isArray(data.queryLogs) ? data.queryLogs : [];
             missingKeywords.value = Array.isArray(data.missingKeywords) ? data.missingKeywords : [];
-            syncStatus.value = '已同步 · ' ;
+            syncStatus.value = '已同步  ' ;
           } catch (e) {
             console.error('雲端讀取失敗', e);
             syncStatus.value = '同步失敗：' + e.message;
@@ -499,7 +499,7 @@
               queryCount: queryLogs.value.length,
               missingCount: missingKeywords.value.length
             });
-            syncStatus.value = `已同步 · 登入 ${(totalMs / 1000).toFixed(1)} 秒`;
+            syncStatus.value = `已同步`;
           } catch (e) {
             console.error('管理者登入失敗', e);
             loginError.value = true;
