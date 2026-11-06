@@ -55,7 +55,7 @@
               <button @click="loginAdmin" type="button" :disabled="isAdminLoggingIn" class="w-full bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 disabled:cursor-wait text-white font-bold py-2.5 rounded-lg shadow-sm transition cursor-pointer flex justify-center items-center gap-2">
                 <i v-if="isAdminLoggingIn" class="fa-solid fa-spinner fa-spin"></i>
                 <i v-else class="fa-solid fa-user-shield"></i>
-                {{ isAdminLoggingIn ? '驗證中，載入儀表板…' : '驗證管理者並進入後台' }}
+                {{ isAdminLoggingIn ? '驗證中' : '驗證管理者' }}
               </button>
             </div>
           </div>
