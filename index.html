@@ -373,7 +373,7 @@
             }
             queryLogs.value = Array.isArray(data.queryLogs) ? data.queryLogs : [];
             missingKeywords.value = Array.isArray(data.missingKeywords) ? data.missingKeywords : [];
-            syncStatus.value = '已同步 · ' + new Date().toLocaleTimeString('zh-TW', { hour12: false });
+            syncStatus.value = '已同步 · ' ;
           } catch (e) {
             console.error('雲端讀取失敗', e);
             syncStatus.value = '同步失敗：' + e.message;
