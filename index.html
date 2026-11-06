@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>操作教學與故障排除指南系統</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen">
+
+  <div id="app" class="max-w-4xl mx-auto p-4 pb-20">
+
+    <!-- 門市 / 管理者身份確認遮罩 -->
+    <div v-if="!currentStore" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border">
+        <div class="text-center mb-6">
+          <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
+            <i class="fa-solid fa-store"></i>
+          </div>
+          <h2 class="text-lg font-bold text-slate-800">歡迎使用門市後援站</h2>
+          <p class="text-xs text-slate-500 mt-1">請輸入您的門市名稱與名字</p>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">門市名稱</label>
+            <input v-model="loginForm.storeName" type="text" placeholder="例：台南南區概念店" class="w-full p-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">您的名字</label>
+            <input v-model="loginForm.reporter" type="text" placeholder="例：陳店長" class="w-full p-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">管理者密碼（一般門市免填）</label>
+            <input v-model="loginForm.adminPassword" type="password" autocomplete="current-password" placeholder="管理者登入才需要輸入" class="w-full p-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+            <p class="text-[11px] text-slate-400 mt-1">一般門市留白即可；管理者請使用在 Google 試算表設定的專用密碼。</p>
+          </div>
+          <p v-if="loginError" class="text-xs text-rose-500 font-bold text-center">{{ loginErrorMessage }}</p>
+          <button @click="loginStore" type="button" class="w-full bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold py-3 rounded-lg shadow transition flex justify-center items-center gap-2 cursor-pointer">
+            進入系統 <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 頂部標頭 -->
+    <header class="bg-indigo-600 text-white p-4 rounded-xl shadow-md mb-6 flex justify-between items-center">
+      <div>
+        <h1 class="text-xl font-bold flex items-center gap-2">
+          <i class="fa-solid font-bold fa-cash-register"></i> 操作教學與故障排除指南
+        </h1>
+        <p class="text-xs text-indigo-100 mt-1">
+          當前使用者：<span class="font-bold underline">{{ currentStore }}</span> ({{ currentReporter }})
+          <span v-if="isAdmin" class="ml-2 bg-amber-400 text-slate-900 font-bold px-2 py-0.5 rounded text-[10px]">
+            <i class="fa-solid fa-user-shield"></i> 管理者模式
+          </span>
+        </p>
+      </div>
+      <div>
+        <button @click="logoutStore" class="bg-indigo-500 hover:bg-indigo-700 text-xs px-3 py-1.5 rounded-lg text-white border border-indigo-400 transition cursor-pointer">
+          登出
+        </button>
+      </div>
+    </header>
+
+    <!-- 主功能頁籤分頁 -->
+    <nav class="flex bg-white rounded-lg p-1 shadow-sm mb-6 border">
+      <button @click="activeTab = 'faq'" :class="activeTab === 'faq' ? 'bg-indigo-50 text-indigo-600 font-bold' : 'text-slate-500'" class="flex-1 py-2.5 rounded-md text-sm transition flex justify-center items-center gap-2 cursor-pointer">
+        <i class="fa-solid fa-circle-question"></i> 門市問題解答知識庫
+      </button>
+
+      <button v-if="isAdmin" @click="activeTab = 'dashboard'" :class="activeTab === 'dashboard' ? 'bg-indigo-50 text-indigo-600 font-bold' : 'text-slate-500'" class="flex-1 py-2.5 rounded-md text-sm transition flex justify-center items-center gap-2 cursor-pointer">
+        <i class="fa-solid fa-chart-pie"></i> 後台：門市查詢儀表板
+      </button>
+    </nav>
+
+    <!-- 1. 前台：FAQ 疑難自救區 -->
+    <main v-if="activeTab === 'faq'">
+      <div class="relative mb-4 flex gap-2">
+        <div class="relative flex-1">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-3.5 text-slate-400"></i>
+          <input v-model="searchQuery" @keyup.enter="handleSearchSubmit" type="text" placeholder="輸入關鍵字（例：小白單、斷線、退單）並可按 Enter 記錄查無結果..." class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-sm">
+        </div>
+        <button @click="handleSearchSubmit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 rounded-lg text-xs font-bold transition cursor-pointer">
+          搜尋
+        </button>
+      </div>
+
+      <div v-if="searchQuery.trim() && filteredFaqs.length === 0" class="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700 flex justify-between items-center">
+        <span><i class="fa-solid fa-triangle-exclamation"></i> 找不到與「<strong>{{ searchQuery }}</strong>」相關的問題，系統已自動記錄此未命中關鍵字。</span>
+      </div>
+
+      <div class="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none">
+        <button @click="selectedCategory = 'all'" :class="selectedCategory === 'all' ? 'bg-slate-800 text-white' : 'bg-white text-slate-600 border'" class="px-3 py-1.5 rounded-full text-xs whitespace-nowrap shadow-sm cursor-pointer">全部問題</button>
+        <button v-for="cat in categories" :key="cat" @click="selectedCategory = cat" :class="selectedCategory === cat ? 'bg-slate-800 text-white' : 'bg-white text-slate-600 border'" class="px-3 py-1.5 rounded-full text-xs whitespace-nowrap shadow-sm cursor-pointer">{{ cat }}</button>
+      </div>
+
+      <div class="space-y-3">
+        <div v-for="item in filteredFaqs" :key="item.id" @click="openFaqModal(item)" class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:border-indigo-300 transition cursor-pointer">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-xs px-2.5 py-0.5 rounded bg-indigo-50 text-indigo-600 font-medium">{{ item.category }}</span>
+            <span class="text-xs text-amber-600 font-bold bg-amber-50 px-2.5 py-0.5 rounded"><i class="fa-solid fa-bolt"></i> 30秒自救</span>
+          </div>
+          <h3 class="font-bold text-slate-800 mb-1 text-sm">{{ item.title }}</h3>
+          <p class="text-xs text-slate-500 line-clamp-2">{{ item.symptom }}</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- 2. 後台：數據小儀表板區 -->
+    <main v-if="activeTab === 'dashboard' && isAdmin">
+      <div class="space-y-6">
+
+        <!-- 日期篩選工具列 -->
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+              <i class="fa-solid fa-filter text-indigo-600"></i> 日期區間過濾
+            </h3>
+            <div class="flex gap-1.5">
+              <button @click="setQuickDate('today')" class="px-2.5 py-1 text-xs rounded bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 font-medium transition cursor-pointer">今日</button>
+              <button @click="setQuickDate('7days')" class="px-2.5 py-1 text-xs rounded bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 font-medium transition cursor-pointer">近 7 天</button>
+              <button @click="setQuickDate('30days')" class="px-2.5 py-1 text-xs rounded bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 font-medium transition cursor-pointer">近 30 天</button>
+              <button v-if="startDate || endDate" @click="clearDateFilter" class="px-2.5 py-1 text-xs rounded bg-slate-200 text-slate-700 hover:bg-slate-300 font-bold transition cursor-pointer">重置時間</button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div>
+              <label class="block text-slate-500 mb-1 font-medium">開始日期</label>
+              <input v-model="startDate" type="date" class="w-full p-2 rounded-lg border border-slate-300 outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+            </div>
+            <div>
+              <label class="block text-slate-500 mb-1 font-medium">結束日期</label>
+              <input v-model="endDate" type="date" class="w-full p-2 rounded-lg border border-slate-300 outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+            </div>
+          </div>
+          <div class="flex items-center justify-between border-t pt-3 text-xs">
+            <span class="text-slate-500">{{ syncStatus }}</span>
+            <button @click="refreshDashboard" class="px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-bold transition cursor-pointer">
+              <i class="fa-solid fa-rotate-right mr-1"></i>立即更新紀錄
+            </button>
+          </div>
+        </div>
+
+        <!-- 統計數據與匯出/清空按鈕 (已移除備份與匯入) -->
+        <div class="bg-white p-4 rounded-xl border shadow-sm space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <p class="text-xs text-slate-500 mb-1">篩選區間總查詢數</p>
+              <h3 class="text-2xl font-bold text-indigo-600">{{ filteredLogs.length }} <span class="text-xs text-slate-400 font-normal">次</span></h3>
+            </div>
+            <div>
+              <p class="text-xs text-slate-500 mb-1">篩選區間門市數</p>
+              <h3 class="text-2xl font-bold text-emerald-600">{{ filteredUniqueStoresCount }} <span class="text-xs text-slate-400 font-normal">間</span></h3>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t flex justify-between items-center text-xs">
+            <button @click="exportToExcel" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-file-excel"></i> 匯出 Excel 報表
+            </button>
+            <button @click="clearAllLogs" class="bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white font-bold px-3 py-1.5 rounded-lg border border-rose-200 transition flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-trash-can"></i> 清空所有查詢紀錄
+            </button>
+          </div>
+        </div>
+
+        <!-- 查無結果的關鍵字紀錄區塊 -->
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
+          <h3 class="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+            <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> 門市查無結果的關鍵字紀錄 (未命中清單)
+          </h3>
+          <div v-if="missingKeywords.length === 0" class="text-xs text-slate-400 py-2">
+            目前尚無門市搜尋查無結果的紀錄。
+          </div>
+          <div v-else class="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-1">
+            <span v-for="(item, idx) in missingKeywords" :key="idx" class="bg-amber-50 border border-amber-200 text-amber-800 text-xs px-2.5 py-1 rounded-lg flex items-center gap-2">
+              <span><strong>{{ item.keyword }}</strong> <span class="text-[10px] text-slate-400">({{ item.storeName }} / {{ item.time }})</span></span>
+            </span>
+          </div>
+        </div>
+
+        <!-- 明細 -->
+        <div class="space-y-4">
+          <div v-if="groupedLogs.length === 0" class="bg-white p-8 rounded-xl border border-slate-200 text-center text-slate-400 text-xs shadow-sm">
+            <i class="fa-solid fa-folder-open text-3xl mb-2"></i>
+            <p>此日期區間內尚無門市查詢紀錄</p>
+          </div>
+
+          <div v-for="dateGroup in groupedLogs" :key="dateGroup.date" class="space-y-2">
+            <div class="flex items-center gap-2 px-1">
+              <i class="fa-solid fa-calendar-day text-indigo-600 text-xs"></i>
+              <h3 class="font-bold text-slate-700 text-sm">{{ formatDateOnly(dateGroup.date) }}</h3>
+              <span class="text-[11px] text-slate-400 font-normal">（當日共 {{ dateGroup.totalCount }} 次查詢）</span>
+            </div>
+
+            <div v-for="storeGroup in dateGroup.stores" :key="storeGroup.storeName" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+              <div @click="toggleStoreExpand(dateGroup.date, storeGroup.storeName)" class="p-3.5 flex justify-between items-center cursor-pointer hover:bg-slate-50 transition">
+                <div class="flex items-center gap-2.5">
+                  <span class="font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded text-xs">{{ storeGroup.storeName }}</span>
+                  <span class="text-xs text-slate-500 font-medium">查詢了 {{ storeGroup.logs.length }} 個問題</span>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-slate-400">
+                  <span>最後查詢：{{ formatTimeOnly(storeGroup.latestTime) }}</span>
+                  <i :class="isExpanded(dateGroup.date, storeGroup.storeName) ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid text-slate-400 transition-transform"></i>
+                </div>
+              </div>
+
+              <div v-if="isExpanded(dateGroup.date, storeGroup.storeName)" class="bg-slate-50 border-t border-slate-100 p-3 space-y-2">
+                <div v-for="log in storeGroup.logs" :key="log.id" class="bg-white p-2.5 rounded border border-slate-200 flex justify-between items-center text-xs shadow-2xs">
+                  <div>
+                    <span class="text-slate-400 text-[10px] mr-1.5">[{{ log.reporter }}]</span>
+                    <span class="font-bold text-slate-800"><i class="fa-solid fa-circle-chevron-right text-[10px] text-indigo-500 mr-1"></i> {{ log.faqTitle }}</span>
+                    <span v-if="log.keyword" class="ml-2 text-[10px] text-indigo-500 bg-indigo-50 px-1.5 py-0.2 rounded">搜尋關鍵字：{{ log.keyword }}</span>
+                    <span class="ml-2 text-[10px] px-1.5 py-0.2 rounded bg-slate-100 text-slate-500">{{ log.category }}</span>
+                  </div>
+                  <span class="text-slate-400 text-[11px] whitespace-nowrap ml-2">{{ formatTimeOnly(log.timeOnly) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- FAQ 彈窗 Modal -->
+    <div v-if="activeFaq" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+      <div class="bg-white rounded-xl max-w-lg w-full p-6 max-h-[85vh] overflow-y-auto relative shadow-2xl">
+        <button @click="activeFaq = null" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 cursor-pointer">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+        <span class="text-xs px-2.5 py-0.5 rounded bg-indigo-50 text-indigo-600 font-medium">{{ activeFaq.category }}</span>
+        <h2 class="text-lg font-bold text-slate-800 my-2">{{ activeFaq.title }}</h2>
+        <div class="bg-slate-50 p-3 rounded-lg text-xs text-slate-600 mb-4 border">
+          <strong>常見症狀：</strong>{{ activeFaq.symptom }}
+        </div>
+        <h4 class="font-bold text-sm text-indigo-600 mb-2 flex items-center gap-1">
+          <i class="fa-solid fa-list-check"></i> 3 步驟自救 SOP
+        </h4>
+        <ol class="list-decimal list-inside text-sm space-y-2 text-slate-700 mb-6 leading-relaxed">
+          <li v-for="(step, idx) in activeFaq.steps" :key="idx" class="pl-1">{{ step }}</li>
+        </ol>
+        <button @click="activeFaq = null" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg text-sm font-bold shadow cursor-pointer">
+          我知道了（關閉）
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const { createApp, ref, computed, onMounted } = Vue;
+
+    createApp({
+      setup() {
+        const activeTab = ref('faq');
+        const searchQuery = ref('');
+        const selectedCategory = ref('all');
+        const activeFaq = ref(null);
+
+        const currentStore = ref('');
+        const currentReporter = ref('');
+        const loginForm = ref({ storeName: '', reporter: '', adminPassword: '' });
+        const loginError = ref(false);
+        const loginErrorMessage = ref('');
+
+        const startDate = ref('');
+        const endDate = ref('');
+
+        // 管理者權限由 Apps Script 後端密碼驗證，不再依賴前端名稱白名單。
+        const isAdmin = ref(false);
+        const adminToken = ref('');
+
+        const expandedStores = ref({});
+        const queryLogs = ref([]);
+        const missingKeywords = ref([]);
+        const syncStatus = ref('管理者登入後同步雲端紀錄');
+        let isFetchingLogs = false;
+
+        // 你的 Google Apps Script Web App /exec 網址。
+        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyHH5VLw5bQIo_nbhtusCepRo9XrH3TwK8mtlNHBlHer9IyI7E1E2VLEeT2_VEBqfKk/exec';
+
+        // 使用 JSONP 讀取 GAS，避開 GitHub Pages 與 Apps Script 的跨網域讀取限制。
+        const jsonpRequest = (params, timeoutMs = 20000) => {
+          return new Promise((resolve, reject) => {
+            const callbackName = '__gas_cb_' + Date.now() + '_' + Math.floor(Math.random() * 1000000);
+            const script = document.createElement('script');
+            const url = new URL(GAS_API_URL);
+            Object.entries(params).forEach(([key, value]) => {
+              url.searchParams.set(key, String(value));
+            });
+            url.searchParams.set('callback', callbackName);
+
+            let finished = false;
+            const cleanup = () => {
+              if (finished) return;
+              finished = true;
+              clearTimeout(timer);
+              script.remove();
+              try { delete window[callbackName]; } catch (_) { window[callbackName] = undefined; }
+            };
+
+            const timer = setTimeout(() => {
+              cleanup();
+              reject(new Error('雲端讀取逾時，請檢查 Apps Script 部署權限與網址。'));
+            }, timeoutMs);
+
+            window[callbackName] = (data) => {
+              cleanup();
+              resolve(data);
+            };
+            script.onerror = () => {
+              cleanup();
+              reject(new Error('無法連線至 Google Apps Script，請確認 /exec 網址與部署狀態。'));
+            };
+            script.src = url.toString();
+            document.head.appendChild(script);
+          });
+        };
+
+        // 使用 text/plain + no-cors 發送簡單 POST，避免 application/json 觸發 CORS 預檢。
+        // no-cors 回應內容無法由瀏覽器讀取；管理者登入會再用 JSONP checkSession 確認。
+        const postToCloud = async (payload) => {
+          await fetch(GAS_API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+            body: JSON.stringify(payload)
+          });
+        };
+
+        const createAdminToken = () => {
+          if (!window.crypto || !window.crypto.getRandomValues) {
+            throw new Error('此瀏覽器無法產生安全登入憑證，請使用 HTTPS 網址開啟網站。');
+          }
+          const bytes = new Uint8Array(32);
+          window.crypto.getRandomValues(bytes);
+          return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
+        };
+
+        const fetchLogsFromCloud = async () => {
+          if (!isAdmin.value || !adminToken.value || isFetchingLogs) return;
+          isFetchingLogs = true;
+          syncStatus.value = '正在同步雲端紀錄…';
+          try {
+            const data = await jsonpRequest({ action: 'get', token: adminToken.value });
+            if (!data || !data.ok) {
+              throw new Error((data && data.error) || '雲端讀取失敗');
+            }
+            queryLogs.value = Array.isArray(data.queryLogs) ? data.queryLogs : [];
+            missingKeywords.value = Array.isArray(data.missingKeywords) ? data.missingKeywords : [];
+            syncStatus.value = '已同步 · ' + new Date().toLocaleTimeString('zh-TW', { hour12: false });
+          } catch (e) {
+            console.error('雲端讀取失敗', e);
+            syncStatus.value = '同步失敗：' + e.message;
+            if (/管理者登入已失效|未授權|沒有管理者權限/.test(e.message)) {
+              isAdmin.value = false;
+              adminToken.value = '';
+              activeTab.value = 'faq';
+              alert('管理者登入已失效，請重新輸入管理者密碼。');
+            }
+          } finally {
+            isFetchingLogs = false;
+          }
+        };
+
+        const refreshDashboard = () => fetchLogsFromCloud();
+
+        onMounted(() => {
+          // 管理者停留在儀表板時，每 15 秒更新一次，讓其他裝置新增的紀錄出現。
+          setInterval(() => {
+            if (isAdmin.value && activeTab.value === 'dashboard') fetchLogsFromCloud();
+          }, 15000);
+        });
+
+        const loginStore = async () => {
+          const sName = loginForm.value.storeName ? loginForm.value.storeName.trim() : '';
+          const sRep = loginForm.value.reporter ? loginForm.value.reporter.trim() : '';
+          const adminPassword = loginForm.value.adminPassword || '';
+
+          if (!sName || !sRep) {
+            loginError.value = true;
+            loginErrorMessage.value = '請完整填寫門市名稱與名字！';
+            return;
+          }
+
+          loginError.value = false;
+          loginErrorMessage.value = '';
+
+          if (adminPassword.trim()) {
+            try {
+              syncStatus.value = '正在驗證管理者…';
+              const token = createAdminToken();
+              await postToCloud({ action: 'adminLogin', password: adminPassword, token: token });
+              const check = await jsonpRequest({ action: 'checkSession', token: token });
+              if (!check || !check.ok) {
+                throw new Error('管理者密碼錯誤，或尚未在試算表設定管理者密碼。');
+              }
+              currentStore.value = sName;
+              currentReporter.value = sRep;
+              isAdmin.value = true;
+              adminToken.value = token;
+              activeTab.value = 'dashboard';
+              loginForm.value.adminPassword = '';
+              await fetchLogsFromCloud();
+            } catch (e) {
+              console.error('管理者登入失敗', e);
+              loginError.value = true;
+              loginErrorMessage.value = e.message || '管理者登入失敗，請稍後再試。';
+              isAdmin.value = false;
+              adminToken.value = '';
+            }
+          } else {
+            currentStore.value = sName;
+            currentReporter.value = sRep;
+            isAdmin.value = false;
+            adminToken.value = '';
+            activeTab.value = 'faq';
+          }
+        };
+
+        const logoutStore = () => {
+          const confirmLogout = confirm('⚠️ 確定要登出當前使用者 / 門市嗎？');
+          if (!confirmLogout) return;
+          if (isAdmin.value && adminToken.value) {
+            postToCloud({ action: 'adminLogout', token: adminToken.value }).catch(console.error);
+          }
+          currentStore.value = '';
+          currentReporter.value = '';
+          loginForm.value.storeName = '';
+          loginForm.value.reporter = '';
+          loginForm.value.adminPassword = '';
+          adminToken.value = '';
+          isAdmin.value = false;
+          queryLogs.value = [];
+          missingKeywords.value = [];
+          activeTab.value = 'faq';
+        };
+
+        const categories = ['出單與印表機', '網路與連線', '肚肚後台與菜單', '發票與錢箱'];
+
+        const faqs = ref([
+          {
+            id: 1,
+            category: '出單與印表機',
+            title: '小白單 / 出單機印不出來（或閃紅燈）',
+            symptom: '結帳後出單機完全沒反應，或者燈號持續閃爍紅燈。',
+            steps: [
+              '檢查印表機蓋子是否關緊，並確認紙捲方向無裝反（出紙流向朝下）。',
+              '查看 Switch 網路交換器與印表機後方網線燈號是否有亮。',
+              '將出單機電源關閉，等待 10 秒後重新開啟再試一次。'
+            ]
+          },
+          {
+            id: 2,
+            category: '網路與連線',
+            title: '外送平台 (UberEats/Foodpanda) 訂單未進 POS',
+            symptom: '平板傳出外送提示音，但 POS 機上沒有跳出對應訂單。',
+            steps: [
+              '檢查門市小烏龜（中華電信數據機）與 Wi-Fi 分享器燈號是否正常。',
+              '確認 iPad 的 Wi-Fi 是否連接在門市專用的 5G 頻段。',
+              '將肚肚 POS App 劃掉完全關閉，重新開啟並執行「數據同步」。'
+            ]
+          },
+          {
+            id: 3,
+            category: '肚肚後台與菜單',
+            title: '後台改了菜單/價格，前台 POS 沒變更',
+            symptom: '在電腦後台新增品項或改價格後，門市 iPad 的菜單依然顯示舊資料。',
+            steps: [
+              '確保後台修改完畢後，有點擊右側的「發布/更新」按鈕。',
+              '至前台 POS 點選「設定」➔「菜單與資料同步」➔ 點擊「手動更新數據」。',
+              '若仍未更新，請將 POS App 登出後重新登入即可抓取新菜單。'
+            ]
+          }
+        ]);
+
+        const filteredFaqs = computed(() => {
+          return faqs.value.filter(item => {
+            const matchCat = selectedCategory.value === 'all' || item.category === selectedCategory.value;
+            const matchQuery = item.title.includes(searchQuery.value) || item.symptom.includes(searchQuery.value);
+            return matchCat && matchQuery;
+          });
+        });
+
+        const handleSearchSubmit = async () => {
+          const query = searchQuery.value.trim();
+          if (!query || isAdmin.value) return;
+
+          if (filteredFaqs.value.length === 0) {
+            try {
+              await postToCloud({
+                action: 'appendMissingKeyword',
+                log: { keyword: query, storeName: currentStore.value, reporter: currentReporter.value }
+              });
+            } catch (e) {
+              console.error('未命中關鍵字寫入失敗', e);
+            }
+          }
+        };
+
+        // 日期與時間只顯示需要的部分；兼容舊版 API 回傳的 00:00:00 / 1899/12/30。
+        const formatDateOnly = (value) => {
+          const text = String(value == null ? '' : value).trim();
+          if (!text) return '未知日期';
+          const match = text.match(/^(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})/);
+          if (!match) return text;
+          return `${match[1]}/${String(match[2]).padStart(2, '0')}/${String(match[3]).padStart(2, '0')}`;
+        };
+
+        const formatTimeOnly = (value) => {
+          const text = String(value == null ? '' : value).trim();
+          if (!text) return '';
+          // 也能從舊格式「1899/12/30 13:35:49」擷取真正的時間。
+          const match = text.match(/(?:^|[ T])(\d{1,2}):(\d{2})(?::(\d{2}))?/);
+          if (!match) return text;
+          return `${String(match[1]).padStart(2, '0')}:${match[2]}:${match[3] || '00'}`;
+        };
+
+        const filteredLogs = computed(() => {
+          return queryLogs.value.filter(log => {
+            if (!log.dateOnly) return true;
+            const logDateStr = formatDateOnly(log.dateOnly).replace(/\//g, '-');
+
+            if (startDate.value && logDateStr < startDate.value) return false;
+            if (endDate.value && logDateStr > endDate.value) return false;
+
+            return true;
+          });
+        });
+
+        const filteredUniqueStoresCount = computed(() => {
+          const stores = new Set(filteredLogs.value.map(log => log.storeName));
+          return stores.size;
+        });
+
+        const groupedLogs = computed(() => {
+          const datesMap = {};
+
+          filteredLogs.value.forEach(log => {
+            const dateStr = formatDateOnly(log.dateOnly);
+            if (!datesMap[dateStr]) datesMap[dateStr] = {};
+
+            const storeName = log.storeName || '未知門市';
+            if (!datesMap[dateStr][storeName]) datesMap[dateStr][storeName] = [];
+
+            datesMap[dateStr][storeName].push(log);
+          });
+
+          return Object.keys(datesMap)
+            .sort((a, b) => b.localeCompare(a))
+            .map(date => {
+              const storesMap = datesMap[date];
+              let totalCount = 0;
+
+              const stores = Object.keys(storesMap).map(storeName => {
+                const logs = storesMap[storeName].sort((a, b) => b.id - a.id);
+                totalCount += logs.length;
+                return { storeName, latestTime: formatTimeOnly(logs[0]?.timeOnly || ''), logs };
+              }).sort((a, b) => b.logs[0].id - a.logs[0].id);
+
+              return { date, totalCount, stores };
+            });
+        });
+
+        const setQuickDate = (type) => {
+          const now = new Date();
+          const formatDate = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+          endDate.value = formatDate(now);
+
+          if (type === 'today') startDate.value = formatDate(now);
+          else if (type === '7days') {
+            const past = new Date(); past.setDate(now.getDate() - 6);
+            startDate.value = formatDate(past);
+          } else if (type === '30days') {
+            const past = new Date(); past.setDate(now.getDate() - 29);
+            startDate.value = formatDate(past);
+          }
+        };
+
+        const clearDateFilter = () => { startDate.value = ''; endDate.value = ''; };
+
+        const clearAllLogs = async () => {
+          if (!isAdmin.value || !adminToken.value) return alert('請先以管理者身分登入。');
+          if (!confirm('⚠️ 警告：確定要清空「所有的門市查詢紀錄」嗎？此動作無法復原！')) return;
+          try {
+            await postToCloud({ action: 'clearAll', token: adminToken.value });
+            await fetchLogsFromCloud();
+            if (queryLogs.value.length === 0 && missingKeywords.value.length === 0) {
+              alert('雲端紀錄已清空。');
+            } else {
+              alert('清空結果尚未確認，請重新整理紀錄並檢查 Apps Script 執行記錄。');
+            }
+          } catch (e) {
+            alert('清空失敗：' + e.message);
+          }
+        };
+
+        const toggleStoreExpand = (date, storeName) => {
+          const key = `${date}_${storeName}`;
+          expandedStores.value[key] = !expandedStores.value[key];
+        };
+
+        const isExpanded = (date, storeName) => !!expandedStores.value[`${date}_${storeName}`];
+
+        const openFaqModal = async (item) => {
+          activeFaq.value = item;
+          if (isAdmin.value) return; // 管理者瀏覽不記錄
+
+          try {
+            await postToCloud({
+              action: 'appendQueryLog',
+              log: {
+                storeName: currentStore.value,
+                reporter: currentReporter.value,
+                faqTitle: item.title,
+                category: item.category,
+                keyword: searchQuery.value.trim() || '直接點擊查詢'
+              }
+            });
+          } catch (e) {
+            console.error('查詢紀錄寫入失敗', e);
+          }
+        };
+
+        const exportToExcel = () => {
+          if (filteredLogs.value.length === 0) return alert('目前沒有紀錄可供匯出！');
+          let html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"></head><body><table border="1"><thead><tr style="background-color: #4f46e5; color: #ffffff;"><th>門市名稱</th><th>使用者</th><th>查詢日期</th><th>查詢時間</th><th>搜尋關鍵字</th><th>查詢問題</th><th>分類</th></tr></thead><tbody>`;
+          filteredLogs.value.forEach(log => {
+            html += `<tr><td>${log.storeName}</td><td>${log.reporter}</td><td>${log.dateOnly}</td><td>${log.timeOnly}</td><td>${log.keyword || '-'}</td><td>${log.faqTitle}</td><td>${log.category}</td></tr>`;
+          });
+          html += `</tbody></table></body></html>`;
+          const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a'); a.href = url;
+          a.download = `POS門市查詢紀錄報表_${new Date().toISOString().slice(0, 10)}.xls`;
+          document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+        };
+
+        return {
+          activeTab, searchQuery, selectedCategory, categories, faqs, filteredFaqs,
+          currentStore, currentReporter, loginForm, loginError, loginStore, logoutStore,
+          queryLogs, missingKeywords, filteredLogs, filteredUniqueStoresCount, groupedLogs,
+          toggleStoreExpand, isExpanded, activeFaq, openFaqModal, isAdmin,
+          startDate, endDate, setQuickDate, clearDateFilter, clearAllLogs,
+          handleSearchSubmit, exportToExcel, refreshDashboard, syncStatus, loginErrorMessage,
+          formatDateOnly, formatTimeOnly
+        };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
