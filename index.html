@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>門市問題解答知識系統</title>
+  <title>門市操作教學與故障排除</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -67,7 +67,7 @@
     <header class="bg-indigo-600 text-white p-4 rounded-xl shadow-md mb-6 flex justify-between items-center">
       <div>
         <h1 class="text-xl font-bold flex items-center gap-2">
-          <i class="fa-solid font-bold fa-cash-register"></i> 門市問題解答知識庫
+          <i class="fa-solid font-bold fa-cash-register"></i> 門市操作教學與故障排除
         </h1>
         <p class="text-xs text-indigo-100 mt-1">
           當前使用者：<span class="font-bold underline">{{ currentStore }}</span> ({{ currentReporter }})
@@ -85,11 +85,11 @@
 
     <!-- 主功能頁籤分頁 -->
     <nav class="flex bg-white rounded-lg p-1 shadow-sm mb-6 border">
-      <button @click="activeTab = 'faq'" :class="activeTab === 'faq' ? 'bg-indigo-50 text-indigo-600 font-bold' : 'text-slate-500'" class="flex-1 py-2.5 rounded-md text-sm transition flex justify-center items-center gap-2 cursor-pointer">
-        <i class="fa-solid fa-circle-question"></i> 操作教學
+      <button @click="activeTab = 'guide'" :class="activeTab === 'guide' ? 'bg-indigo-50 text-indigo-600 font-bold' : 'text-slate-500'" class="flex-1 py-2.5 rounded-md text-sm transition flex justify-center items-center gap-2 cursor-pointer">
+        <i class="fa-solid fa-book-open"></i> 操作教學
       </button>
-      <button @click="activeTab = 'faq'" :class="activeTab === 'faq' ? 'bg-indigo-50 text-indigo-600 font-bold' : 'text-slate-500'" class="flex-1 py-2.5 rounded-md text-sm transition flex justify-center items-center gap-2 cursor-pointer">
-        <i class="fa-solid fa-circle-question"></i> 故障排除
+      <button @click="activeTab = 'troubleshooting'" :class="activeTab === 'troubleshooting' ? 'bg-indigo-50 text-indigo-600 font-bold' : 'text-slate-500'" class="flex-1 py-2.5 rounded-md text-sm transition flex justify-center items-center gap-2 cursor-pointer">
+        <i class="fa-solid fa-screwdriver-wrench"></i> 故障排除
       </button>
       
       <button v-if="isAdmin" @click="activeTab = 'dashboard'" :class="activeTab === 'dashboard' ? 'bg-indigo-50 text-indigo-600 font-bold' : 'text-slate-500'" class="flex-1 py-2.5 rounded-md text-sm transition flex justify-center items-center gap-2 cursor-pointer">
@@ -97,8 +97,20 @@
       </button>
     </nav>
 
-    <!-- 1. 前台：FAQ 疑難自救區 -->
-    <main v-if="activeTab === 'faq'">
+    <!-- 1. 前台：操作教學區（與故障排除分開） -->
+    <main v-if="activeTab === 'guide'">
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center">
+        <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl">
+          <i class="fa-solid fa-book-open"></i>
+        </div>
+        <h2 class="font-bold text-slate-800 mb-2">操作教學</h2>
+        <p class="text-sm text-slate-500 leading-relaxed">這裡會放置門市日常操作步驟與教學。</p>
+        <p class="text-xs text-slate-400 mt-2">目前尚未加入操作教學內容；原有的問題處理項目已放在「故障排除」。</p>
+      </div>
+    </main>
+
+    <!-- 2. 前台：故障排除區 -->
+    <main v-if="activeTab === 'troubleshooting'">
       <div class="relative mb-4 flex gap-2">
         <div class="relative flex-1">
           <i class="fa-solid fa-magnifying-glass absolute left-3 top-3.5 text-slate-400"></i>
@@ -278,7 +290,7 @@
 
     createApp({
       setup() {
-        const activeTab = ref('faq');
+        const activeTab = ref('troubleshooting');
         const searchQuery = ref('');
         const selectedCategory = ref('all');
         const activeFaq = ref(null);
@@ -383,7 +395,7 @@
             if (/管理者登入已失效|未授權|沒有管理者權限/.test(e.message)) {
               isAdmin.value = false;
               adminToken.value = '';
-              activeTab.value = 'faq';
+              activeTab.value = 'troubleshooting';
               alert('管理者登入已失效，請重新輸入管理者密碼。');
             }
           } finally {
@@ -425,7 +437,7 @@
           currentReporter.value = sRep;
           isAdmin.value = false;
           adminToken.value = '';
-          activeTab.value = 'faq';
+          activeTab.value = 'troubleshooting';
         };
 
         // 管理者登入：POST 驗證密碼，再用受保護的 GET 讀取紀錄。
@@ -511,7 +523,7 @@
             adminToken.value = '';
             currentStore.value = '';
             currentReporter.value = '';
-            activeTab.value = 'faq';
+            activeTab.value = 'troubleshooting';
           } finally {
             isAdminLoggingIn.value = false;
           }
@@ -533,7 +545,7 @@
           isAdmin.value = false;
           queryLogs.value = [];
           missingKeywords.value = [];
-          activeTab.value = 'faq';
+          activeTab.value = 'troubleshooting';
         };
 
         const categories = ['出單與印表機', '網路與連線', '肚肚後台與菜單', '發票與錢箱'];
