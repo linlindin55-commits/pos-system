@@ -464,6 +464,7 @@
           </section>
 
           
+
 <section v-if="activeFaq.videos && activeFaq.videos.length" class="space-y-3">
   <p class="text-xs font-bold text-slate-500">
     <i class="fa-solid fa-circle-play mr-1"></i>操作影片
@@ -480,6 +481,18 @@
         點擊右側按鈕即可觀看影片
       </p>
     </div>
+
+    <a :href="v.src"
+       target="_blank"
+       rel="noopener noreferrer"
+       class="shrink-0 flex items-center gap-2 rounded-lg bg-orange-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-orange-700 transition">
+      <i class="fa-solid fa-play"></i>
+      觀看影片
+    </a>
+
+  </div>
+</section>
+
 
     <a :href="v.src"
        target="_blank"
