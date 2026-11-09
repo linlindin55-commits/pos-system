@@ -112,7 +112,7 @@
       </button>
     </div>
 
-    <!-- 操作教學 -->
+    <!-- 操作教學：以故障排除相同的簡潔方式呈現 -->
     <main v-if="activeTab === 'guide'">
       <div class="relative mb-4 flex gap-2">
         <div class="relative flex-1">
@@ -123,7 +123,7 @@
       </div>
 
       <div v-if="guideSearchQuery.trim() && filteredGuides.length === 0" class="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700">
-        <i class="fa-solid fa-triangle-exclamation"></i> 找不到「<strong>{{ guideSearchQuery }}</strong>」相關的操作教學。
+        <i class="fa-solid fa-triangle-exclamation"></i> 找不到「<strong>{{ guideSearchQuery }}</strong>」相關的操作教學，已記錄這次搜尋。
       </div>
 
       <div class="space-y-3">
@@ -137,12 +137,12 @@
       </div>
     </main>
 
-    <!-- 故障排除 -->
+    <!-- 故障排除：獨立頁面，原有問題搜尋與三筆故障資料都放在這裡 -->
     <main v-if="activeTab === 'troubleshooting'">
       <div class="relative mb-4 flex gap-2">
         <div class="relative flex-1">
           <i class="fa-solid fa-magnifying-glass absolute left-3 top-3.5 text-slate-400"></i>
-          <input v-model="searchQuery" @keyup.enter="handleSearchSubmit" type="text" placeholder="輸入關鍵字（例：小白單、斷線、退單）並可按 Enter 記錄..." class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-sm">
+          <input v-model="searchQuery" @keyup.enter="handleSearchSubmit" type="text" placeholder="輸入關鍵字（例：小白單、斷線、退單）並可按 Enter 記錄查無結果..." class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-sm">
         </div>
         <button @click="handleSearchSubmit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 rounded-lg text-xs font-bold transition cursor-pointer">
           搜尋
@@ -169,7 +169,7 @@
       </div>
     </main>
 
-    <!-- 後台：數據小儀表板區 -->
+    <!-- 2. 後台：數據小儀表板區 -->
     <main v-if="activeTab === 'dashboard' && isAdmin">
       <div class="space-y-6">
 
@@ -205,7 +205,7 @@
           </div>
         </div>
 
-        <!-- 統計數據與匯出/清空按鈕 -->
+        <!-- 統計數據與匯出/清空按鈕 (已移除備份與匯入) -->
         <div class="bg-white p-4 rounded-xl border shadow-sm space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div>
@@ -350,10 +350,10 @@
         const startDate = ref('');
         const endDate = ref('');
 
+        // 管理者權限由 Apps Script 後端密碼驗證，不再依賴前端名稱白名單。
         const isAdmin = ref(false);
         const adminToken = ref('');
         const SESSION_STORAGE_KEY = 'posSupportCurrentSessionV1';
-
         const saveCurrentSession = () => {
           try {
             if (!currentStore.value || !currentReporter.value) return;
@@ -365,7 +365,6 @@
             }));
           } catch (e) { console.warn('無法保存登入狀態', e); }
         };
-
         const clearSavedSession = () => {
           try { localStorage.removeItem(SESSION_STORAGE_KEY); } catch (e) { console.warn('無法清除登入狀態', e); }
         };
@@ -376,8 +375,10 @@
         const syncStatus = ref('管理者登入後同步雲端紀錄');
         let isFetchingLogs = false;
 
+        // 你的 Google Apps Script Web App /exec 網址。
         const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzUV5w7b_MYRWdKQ_8olYgQZn-q2s_eyTLsIIhtrFYxFtMlKGg6WwUjCAo8SOZoV6ap/exec';
 
+        // 使用 JSONP 讀取 GAS，避開 GitHub Pages 與 Apps Script 的跨網域讀取限制。
         const jsonpRequest = (params, timeoutMs = 20000) => {
           return new Promise((resolve, reject) => {
             const callbackName = '__gas_cb_' + Date.now() + '_' + Math.floor(Math.random() * 1000000);
@@ -415,6 +416,8 @@
           });
         };
 
+        // 使用 text/plain + no-cors 發送簡單 POST，避免 application/json 觸發 CORS 預檢。
+        // no-cors 回應內容無法由瀏覽器讀取；管理者登入會再用 JSONP checkSession 確認。
         const postToCloud = async (payload) => {
           await fetch(GAS_API_URL, {
             method: 'POST',
@@ -444,7 +447,7 @@
             }
             queryLogs.value = Array.isArray(data.queryLogs) ? data.queryLogs : [];
             missingKeywords.value = Array.isArray(data.missingKeywords) ? data.missingKeywords : [];
-            syncStatus.value = '已同步';
+            syncStatus.value = '已同步  ' ;
           } catch (e) {
             console.error('雲端讀取失敗', e);
             syncStatus.value = '同步失敗：' + e.message;
@@ -462,250 +465,8 @@
 
         const refreshDashboard = () => fetchLogsFromCloud();
 
-        // 假資料與分類
-        const categories = ['出單與印表機', '網路與連線', '肚肚後台與菜單', '發票與錢箱'];
-
-        const guides = ref([
-          { 
-            id: 1, 
-            category: '版本更新', 
-            title: 'POS 機顯示 Beta 過期', 
-            summary: '主機提示 Beta 版本過期時，請到 App Store 更新肚肚 POS。', 
-            note: '請點擊 App Store 檢查更新。', 
-            steps: ['打開 App Store', '搜尋 肚肚 POS', '點擊更新'] 
-          }
-        ]);
-
-        const faqs = ref([
-          {
-            id: 1,
-            category: '出單與印表機',
-            title: '出單機（小白單）無法印出',
-            symptom: '點餐後廚房或收銀台的小白單沒有印出，印表機燈號異常或閃爍。',
-            steps: ['檢查印表機電源線與網路線是否鬆脫。', '將印表機關機 10 秒後重新開機。', '檢查肚肚 POS 裝置的連線狀態是否正常。']
-          },
-          {
-            id: 2,
-            category: '網路與連線',
-            title: '平板 / 主機顯示網路斷線',
-            symptom: '系統提示無法連線至雲端，訂單無法同步或上傳。',
-            steps: ['檢查 Wi-Fi 分享器或網路數據機是否正常運作。', '將 POS 平板的 Wi-Fi 關閉後重新開啟。', '確認網路線有無插好，必要時重啟分享器。']
-          },
-          {
-            id: 3,
-            category: '發票與錢箱',
-            title: '錢箱無法自動彈開',
-            symptom: '結帳完成後發票有印出，但收銀錢箱沒有自動彈開。',
-            steps: ['檢查錢箱連結線是否確實插在印表機的 DK 埠。', '手動使用鑰匙開啟錢箱確認內部有無卡住。', '重新啟動印表機與 POS 主機後再次測試結帳。']
-          }
-        ]);
-
-        // 搜尋過濾
-        const filteredGuides = computed(() => {
-          const q = guideSearchQuery.value.trim().toLowerCase();
-          if (!q) return guides.value;
-          return guides.value.filter(item => 
-            item.title.toLowerCase().includes(q) || 
-            item.summary.toLowerCase().includes(q) || 
-            item.category.toLowerCase().includes(q)
-          );
-        });
-
-        const filteredFaqs = computed(() => {
-          let list = faqs.value;
-          if (selectedCategory.value !== 'all') {
-            list = list.filter(item => item.category === selectedCategory.value);
-          }
-          const q = searchQuery.value.trim().toLowerCase();
-          if (!q) return list;
-          return list.filter(item => 
-            item.title.toLowerCase().includes(q) || 
-            item.symptom.toLowerCase().includes(q) || 
-            item.category.toLowerCase().includes(q)
-          );
-        });
-
-        // 記錄查無結果的函式
-        const recordMissingKeyword = async (keyword, type) => {
-          if (!keyword || !currentStore.value) return;
-          const payload = {
-            action: 'recordMissing',
-            storeName: currentStore.value,
-            reporter: currentReporter.value,
-            keyword: keyword,
-            type: type
-          };
-          missingKeywords.value.unshift({
-            storeName: currentStore.value,
-            reporter: currentReporter.value,
-            keyword: keyword,
-            type: type,
-            time: new Date().toLocaleString()
-          });
-          try {
-            await postToCloud(payload);
-          } catch (e) {
-            console.warn('記錄未命中關鍵字失敗', e);
-          }
-        };
-
-        const handleGuideSearchSubmit = () => {
-          const q = guideSearchQuery.value.trim();
-          if (q && filteredGuides.value.length === 0) {
-            recordMissingKeyword(q, 'guide');
-          }
-        };
-
-        const handleSearchSubmit = async () => {
-          const q = searchQuery.value.trim();
-          if (q && filteredFaqs.value.length === 0) {
-            recordMissingKeyword(q, 'faq');
-          }
-        };
-
-        const openGuide = (item) => {
-          activeGuide.value = item;
-        };
-
-        const openFaqModal = async (item) => {
-          activeFaq.value = item;
-          if (currentStore.value) {
-            const logData = {
-              action: 'log',
-              storeName: currentStore.value,
-              reporter: currentReporter.value,
-              faqId: item.id,
-              faqTitle: item.title,
-              category: item.category,
-              keyword: searchQuery.value.trim()
-            };
-            queryLogs.value.unshift({
-              id: Date.now(),
-              storeName: currentStore.value,
-              reporter: currentReporter.value,
-              faqId: item.id,
-              faqTitle: item.title,
-              category: item.category,
-              keyword: searchQuery.value.trim(),
-              time: new Date().toISOString(),
-              timeOnly: new Date().toLocaleTimeString()
-            });
-            try {
-              await postToCloud(logData);
-            } catch (e) {
-              console.warn('記錄查詢日誌失敗', e);
-            }
-          }
-        };
-
-        // 儀表板相關計算與篩選
-        const filteredLogs = computed(() => {
-          return queryLogs.value.filter(log => {
-            if (!log.time) return true;
-            const logDate = log.time.split('T')[0];
-            if (startDate.value && logDate < startDate.value) return false;
-            if (endDate.value && logDate > endDate.value) return false;
-            return true;
-          });
-        });
-
-        const filteredUniqueStoresCount = computed(() => {
-          const stores = new Set(filteredLogs.value.map(l => l.storeName));
-          return stores.size;
-        });
-
-        const setQuickDate = (type) => {
-          const today = new Date();
-          const formatDateStr = (d) => d.toISOString().split('T')[0];
-          endDate.value = formatDateStr(today);
-          if (type === 'today') {
-            startDate.value = endDate.value;
-          } else if (type === '7days') {
-            const d = new Date();
-            d.setDate(today.getDate() - 6);
-            startDate.value = formatDateStr(d);
-          } else if (type === '30days') {
-            const d = new Date();
-            d.setDate(today.getDate() - 29);
-            startDate.value = formatDateStr(d);
-          }
-        };
-
-        const clearDateFilter = () => {
-          startDate.value = '';
-          endDate.value = '';
-        };
-
-        const exportToExcel = () => {
-          let csv = '\uFEFF時間,門市名稱,回報者,分類,查閱問題,搜尋關鍵字\n';
-          filteredLogs.value.forEach(l => {
-            csv += `"${l.time || ''}","${l.storeName || ''}","${l.reporter || ''}","${l.category || ''}","${l.faqTitle || ''}","${l.keyword || ''}"\n`;
-          });
-          const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `門市查詢報表_${new Date().toISOString().slice(0, 10)}.csv`;
-          a.click();
-          URL.revokeObjectURL(url);
-        };
-
-        const clearAllLogs = async () => {
-          if (!confirm('⚠️ 確定要清空雲端所有的查詢紀錄嗎？此動作無法復原。')) return;
-          try {
-            await postToCloud({ action: 'clearLogs', token: adminToken.value });
-            queryLogs.value = [];
-            missingKeywords.value = [];
-            alert('已成功清空所有紀錄。');
-          } catch (e) {
-            alert('清空失敗：' + e.message);
-          }
-        };
-
-        const groupedLogs = computed(() => {
-          const map = {};
-          filteredLogs.value.forEach(log => {
-            const dateStr = log.time ? log.time.split('T')[0] : '未知日期';
-            if (!map[dateStr]) map[dateStr] = { date: dateStr, totalCount: 0, storesMap: {} };
-            map[dateStr].totalCount++;
-            const sName = log.storeName || '未命名門市';
-            if (!map[dateStr].storesMap[sName]) {
-              map[dateStr].storesMap[sName] = { storeName: sName, logs: [], latestTime: log.time || '' };
-            }
-            map[dateStr].storesMap[sName].logs.push(log);
-            if ((log.time || '') > map[dateStr].storesMap[sName].latestTime) {
-              map[dateStr].storesMap[sName].latestTime = log.time;
-            }
-          });
-
-          return Object.values(map).map(d => ({
-            date: d.date,
-            totalCount: d.totalCount,
-            stores: Object.values(d.storesMap)
-          })).sort((a, b) => b.date.localeCompare(a.date));
-        });
-
-        const toggleStoreExpand = (date, storeName) => {
-          const key = `${date}_${storeName}`;
-          expandedStores.value[key] = !expandedStores.value[key];
-        };
-
-        const isExpanded = (date, storeName) => {
-          const key = `${date}_${storeName}`;
-          return !!expandedStores.value[key];
-        };
-
-        const formatDateOnly = (dStr) => dStr;
-        const formatTimeOnly = (tStr) => {
-          if (!tStr) return '';
-          if (tStr.includes('T')) {
-            const timePart = tStr.split('T')[1];
-            return timePart ? timePart.substring(0, 8) : tStr;
-          }
-          return tStr;
-        };
-
         onMounted(async () => {
+          // 從本機還原登入狀態，重新整理頁面不必重新輸入門市資料。
           try {
             const saved = JSON.parse(localStorage.getItem(SESSION_STORAGE_KEY) || 'null');
             if (saved && saved.storeName && saved.reporter) {
@@ -727,7 +488,7 @@
                   clearSavedSession();
                   currentStore.value = ''; currentReporter.value = '';
                   isAdmin.value = false; adminToken.value = ''; activeTab.value = 'guide';
-                  console.warn('管理者登入狀態已失效', e);
+                  console.warn('管理者登入狀態已失效，請重新登入', e);
                 }
               } else {
                 isAdmin.value = false;
@@ -736,13 +497,13 @@
               }
             }
           } catch (e) { clearSavedSession(); console.warn('還原登入狀態失敗', e); }
-
+          // 每 30 秒更新；分頁在背景時不輪詢，避免不必要的 Apps Script 執行。
           setInterval(() => {
             if (document.visibilityState === 'visible' && isAdmin.value && activeTab.value === 'dashboard') {
               fetchLogsFromCloud();
             }
           }, 30000);
-
+          // 使用者切回頁面時立即補同步。
           document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'visible' && isAdmin.value && activeTab.value === 'dashboard') {
               fetchLogsFromCloud();
@@ -750,6 +511,7 @@
           });
         });
 
+        // 一般門市登入：不顯示、也不要求管理者密碼。
         const loginStore = () => {
           const sName = loginForm.value.storeName ? loginForm.value.storeName.trim() : '';
           const sRep = loginForm.value.reporter ? loginForm.value.reporter.trim() : '';
@@ -770,6 +532,8 @@
           saveCurrentSession();
         };
 
+        // 管理者登入：POST 驗證密碼，再用受保護的 GET 讀取紀錄。
+        // 兩次往返是為了不把管理者密碼放在 GET URL／瀏覽器歷史紀錄中。
         const loginAdmin = async () => {
           if (isAdminLoggingIn.value) return;
 
@@ -792,11 +556,20 @@
           loginError.value = false;
           loginErrorMessage.value = '';
           syncStatus.value = '正在驗證管理者…';
+          const loginStartedAt = performance.now();
+          let postMs = 0;
+          let getMs = 0;
 
           try {
             const token = createAdminToken();
+
+            const postStartedAt = performance.now();
             await postToCloud({ action: 'adminLogin', password: adminPassword, token: token });
+            postMs = Math.round(performance.now() - postStartedAt);
+
+            const getStartedAt = performance.now();
             const data = await jsonpRequest({ action: 'get', token: token }, 20000);
+            getMs = Math.round(performance.now() - getStartedAt);
             if (!data || !data.ok) {
               throw new Error((data && data.error) || '管理者密碼錯誤，或尚未設定管理者密碼。');
             }
@@ -812,7 +585,29 @@
             showAdminLogin.value = false;
             loginForm.value.adminPassword = '';
             saveCurrentSession();
-            syncStatus.value = '已同步';
+
+            const totalMs = Math.round(performance.now() - loginStartedAt);
+            const serverPerf = data.performance || {};
+            console.info('[門市後援站管理者登入效能]', {
+              totalMs: totalMs,
+              postRoundTripMs: postMs,
+              postHandlerMs: serverPerf.postHandlerMs,
+              postRoundTripMinusHandlerMs: serverPerf.postHandlerMs != null
+                ? Math.max(0, postMs - serverPerf.postHandlerMs)
+                : undefined,
+              getRoundTripMs: getMs,
+              serverPasswordVerifyMs: serverPerf.loginVerifyMs,
+              serverSessionCheckMs: serverPerf.sessionCheckMs,
+              dataSource: serverPerf.dataSource,
+              sheetOpenMs: serverPerf.sheetOpenMs,
+              queryReadMs: serverPerf.queryReadMs,
+              missingReadMs: serverPerf.missingReadMs,
+              transformMs: serverPerf.transformMs,
+              serverRequestMs: serverPerf.requestServerMs,
+              queryCount: queryLogs.value.length,
+              missingCount: missingKeywords.value.length
+            });
+            syncStatus.value = `已同步`;
           } catch (e) {
             console.error('管理者登入失敗', e);
             loginError.value = true;
@@ -848,19 +643,25 @@
           activeTab.value = 'guide';
         };
 
+        const categories = ['出單與印表機', '網路與連線', '肚肚後台與菜單', '發票與錢箱'];
+
+        const guides = ref([
+          { 
+            id: 1, 
+            category: '版本更新', 
+            title: 'POS 機顯示 Beta 過期', 
+            summary: '主機提示 Beta 版本過期時，請到 App Store 更新肚肚 POS。', 
+            note: '請點擊 App Store 檢查更新。', 
+            steps: ['打開 App Store', '搜尋 肚肚 POS', '點擊更新'] 
+          }
+        ]);
+
         return {
           activeTab, searchQuery, selectedCategory, activeFaq, activeGuide, guideSearchQuery,
           currentStore, currentReporter, loginForm, showAdminLogin, isAdminLoggingIn, loginError, loginErrorMessage,
           startDate, endDate, isAdmin, adminToken, syncStatus,
           queryLogs, missingKeywords,
-          categories, guides, faqs,
-          filteredGuides, filteredFaqs,
-          handleGuideSearchSubmit, handleSearchSubmit,
-          openGuide, openFaqModal,
-          filteredLogs, filteredUniqueStoresCount,
-          setQuickDate, clearDateFilter, exportToExcel, clearAllLogs,
-          groupedLogs, toggleStoreExpand, isExpanded,
-          formatDateOnly, formatTimeOnly,
+          categories, guides,
           loginStore, loginAdmin, logoutStore, refreshDashboard
         };
       }
