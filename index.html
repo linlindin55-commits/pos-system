@@ -463,13 +463,35 @@
             </ol>
           </section>
 
-          <section v-if="activeFaq.videos && activeFaq.videos.length" class="space-y-3">
-            <p class="text-xs font-bold text-slate-500"><i class="fa-solid fa-circle-play mr-1"></i>操作影片（點播放鍵觀看）</p>
-            <figure v-for="(v, vi) in activeFaq.videos" :key="vi" class="overflow-hidden rounded-xl border border-slate-200 bg-black">
-              <video :src="v.src" controls playsinline preload="metadata" class="mx-auto block max-h-[60vh] w-full"></video>
-              <figcaption class="bg-slate-50 px-3 py-2 text-xs text-slate-600">{{ v.caption }}</figcaption>
-            </figure>
-          </section>
+          
+<section v-if="activeFaq.videos && activeFaq.videos.length" class="space-y-3">
+  <p class="text-xs font-bold text-slate-500">
+    <i class="fa-solid fa-circle-play mr-1"></i>操作影片
+  </p>
+
+  <div v-for="(v, vi) in activeFaq.videos" :key="vi"
+       class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4">
+
+    <div class="min-w-0">
+      <p class="text-sm font-bold text-slate-800">
+        {{ v.caption || '操作教學影片' }}
+      </p>
+      <p class="mt-1 text-xs text-slate-400">
+        點擊右側按鈕即可觀看影片
+      </p>
+    </div>
+
+    <a :href="v.src"
+       target="_blank"
+       rel="noopener noreferrer"
+       class="shrink-0 flex items-center gap-2 rounded-lg bg-orange-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-orange-700 transition">
+      <i class="fa-solid fa-play"></i>
+      觀看影片
+    </a>
+
+  </div>
+</section>
+
 
           <section class="rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs leading-relaxed text-slate-600">
             <i class="fa-solid fa-headset mr-1 text-slate-400"></i>以上都處理過仍然沒有改善，請聯絡客服協助。
