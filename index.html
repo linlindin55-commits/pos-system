@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>門市常見教學｜常見問題</title>
+  <title>門市操作教學｜故障排除</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/vue@3.5.13/dist/vue.global.prod.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -81,7 +81,7 @@
       <div class="flex items-center gap-3 min-w-0">
         <span class="w-9 h-9 rounded-lg bg-orange-600 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-cash-register"></i></span>
         <div class="min-w-0">
-          <h1 class="text-base font-bold text-slate-900">門市常見教學與常見問題</h1>
+          <h1 class="text-base font-bold text-slate-900">門市操作教學與故障排除</h1>
           <p class="text-xs text-slate-500 truncate">{{ currentStore }}（{{ currentReporter }}）<span v-if="isAdmin" class="ml-1 rounded bg-amber-100 px-1.5 py-0.5 font-bold text-amber-800">管理者模式</span></p>
         </div>
       </div>
@@ -97,7 +97,7 @@
         :class="activeTab === 'guide' ? 'border-orange-600 bg-orange-600 text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-orange-300 hover:bg-orange-50/50'"
         class="min-h-[50px] rounded-lg border px-4 py-2.5 transition flex items-center justify-center gap-2 cursor-pointer">
         <i class="fa-solid fa-book-open"></i>
-        <span class="font-bold text-sm">常見教學</span>
+        <span class="font-bold text-sm">操作教學</span>
       </button>
 
       <button
@@ -107,7 +107,7 @@
         :class="activeTab === 'troubleshooting' ? 'border-slate-800 bg-slate-800 text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-rose-300 hover:bg-rose-50/50'"
         class="min-h-[50px] rounded-lg border px-4 py-2.5 transition flex items-center justify-center gap-2 cursor-pointer">
         <i class="fa-solid fa-screwdriver-wrench"></i>
-        <span class="font-bold text-sm">常見問題</span>
+        <span class="font-bold text-sm">故障排除</span>
       </button>
     </div>
 
@@ -979,13 +979,12 @@
           {
             id: 8, category: '異常顯示', title: '你訂結帳單上客人有打備註，但廚房聯沒有顯示',
             summary: '',
-            keywords: '備註 名字 醬料 組裝單 廚房聯 總單 沒顯示 沒有顯示 有打備註 加醬 備註欄位 異常 你訂 沒顯示 ',
+            keywords: '備註 名字 醬料 組裝單 廚房聯 總單 沒顯示 顧客 客人 沒有顯示 有打備註 加醬 備註欄位 異常 你訂 沒顯示 ',
             images: [],
             blocks: [
-              { type: 'note', tone: 'rose', title: '會看到的狀況', text: '**客人總單上有醬料等需求，但組裝單（廚房聯）上沒有顯示。**' },
-              { type: 'cases', title: '原因與處理方式', cases: [
-                { label: '原因', tone: 'amber', headline: '顧客常把需求填在「**名字**」欄位。「**備註**」欄位在名字欄的下方，**廚房聯只會印出備註欄的內容**，填在名字欄的字不會出現在廚房聯上。' },
-                { label: '處理方式', tone: 'emerald', headline: '請顧客把醬料、加料等需求填在「**備註**」欄位，廚房聯單據才會顯示備註內容。' }
+                { type: 'cases', title: '原因與處理方式', cases: [
+                { label: '原因', tone: 'amber', headline: '顧客把需求填在「**訂購人名字**」欄位，**廚房聯只會印出備註欄的內容**，填在訂購人名字欄位的字就不會出現在廚房聯上。' },
+                { label: '處理方式', tone: 'emerald', headline: '請顧客把需求填在「**備註**」欄位，廚房聯才會顯示備註內容。' }
               ] }
             ]
           }
