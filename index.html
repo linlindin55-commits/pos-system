@@ -122,16 +122,16 @@
       <div class="relative mb-4 flex gap-2">
         <div class="relative flex-1">
           <i class="fa-solid fa-magnifying-glass absolute left-3 top-3.5 text-slate-400"></i>
-          <input v-model="guideSearchQuery" @keyup.enter="handleGuideSearchSubmit" type="text" placeholder="搜尋操作教學（例：更新、子機、停售、清桌、關帳）" class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white text-sm">
+          <input v-model="guideSearchQuery" @keyup.enter="handleGuideSearchSubmit" type="text" placeholder="搜尋操作教學（例：更新、子機、停售、清桌、關帳）" class="w-full pl-10 pr-10 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white text-sm">
+          <button v-if="guideSearchQuery" @click="clearGuideSearch" type="button" aria-label="清除教學搜尋" title="清除搜尋" class="absolute right-2 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-700 cursor-pointer">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
         </div>
         <button @click="handleGuideSearchSubmit" class="bg-orange-600 hover:bg-orange-700 text-white px-4 rounded-lg text-xs font-bold transition cursor-pointer">搜尋</button>
       </div>
 
-      <div v-if="guideSearchQuery.trim() && filteredGuides.length === 0" class="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700 flex justify-between items-center gap-2">
-        <span><i class="fa-solid fa-triangle-exclamation"></i> 找不到「<strong>{{ guideSearchQuery }}</strong>」相關的操作教學。</span>
-        <span v-if="isAdmin"></span>
-        <span v-else-if="guideMissLogged === guideSearchQuery.trim()" class="font-bold text-emerald-600 whitespace-nowrap"><i class="fa-solid fa-check"></i> 已回報給管理者</span>
-        <button v-else @click="handleGuideSearchSubmit" type="button" class="whitespace-nowrap rounded-lg bg-amber-500 px-3 py-1.5 font-bold text-white hover:bg-amber-600 cursor-pointer">回報這個關鍵字</button>
+      <div v-if="guideSearchQuery.trim() && filteredGuides.length === 0" class="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700">
+        <i class="fa-solid fa-triangle-exclamation"></i> 找不到「<strong>{{ guideSearchQuery }}</strong>」相關的操作教學，系統會自動記錄搜尋結果。
       </div>
 
       <div class="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none">
@@ -159,18 +159,18 @@
       <div class="relative mb-4 flex gap-2">
         <div class="relative flex-1">
           <i class="fa-solid fa-magnifying-glass absolute left-3 top-3.5 text-slate-400"></i>
-          <input v-model="searchQuery" @keyup.enter="handleSearchSubmit" type="text" placeholder="輸入關鍵字（例：小白單、外送、菜單、斷線）" class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white text-sm">
+          <input v-model="searchQuery" @keyup.enter="handleSearchSubmit" type="text" placeholder="輸入關鍵字（例：小白單、外送、菜單、斷線）" class="w-full pl-10 pr-10 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white text-sm">
+          <button v-if="searchQuery" @click="clearFaqSearch" type="button" aria-label="清除問題搜尋" title="清除搜尋" class="absolute right-2 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-700 cursor-pointer">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
         </div>
         <button @click="handleSearchSubmit" class="bg-orange-600 hover:bg-orange-700 text-white px-4 rounded-lg text-xs font-bold transition cursor-pointer">
           搜尋
         </button>
       </div>
 
-      <div v-if="searchQuery.trim() && filteredFaqs.length === 0" class="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700 flex justify-between items-center gap-2">
-        <span><i class="fa-solid fa-triangle-exclamation"></i> 找不到與「<strong>{{ searchQuery }}</strong>」相關的問題。</span>
-        <span v-if="isAdmin"></span>
-        <span v-else-if="faqMissLogged === searchQuery.trim()" class="font-bold text-emerald-600 whitespace-nowrap"><i class="fa-solid fa-check"></i> 已回報給管理者</span>
-        <button v-else @click="handleSearchSubmit" type="button" class="whitespace-nowrap rounded-lg bg-amber-500 px-3 py-1.5 font-bold text-white hover:bg-amber-600 cursor-pointer">回報這個關鍵字</button>
+      <div v-if="searchQuery.trim() && filteredFaqs.length === 0" class="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700">
+        <i class="fa-solid fa-triangle-exclamation"></i> 找不到與「<strong>{{ searchQuery }}</strong>」相關的問題，系統會自動記錄搜尋結果。
       </div>
 
       <div class="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none">
@@ -209,7 +209,7 @@
               <button @click="setQuickDate('today')" class="px-2.5 py-1 text-xs rounded bg-slate-100 hover:bg-orange-50 hover:text-orange-600 font-medium transition cursor-pointer">今日</button>
               <button @click="setQuickDate('7days')" class="px-2.5 py-1 text-xs rounded bg-slate-100 hover:bg-orange-50 hover:text-orange-600 font-medium transition cursor-pointer">近 7 天</button>
               <button @click="setQuickDate('30days')" class="px-2.5 py-1 text-xs rounded bg-slate-100 hover:bg-orange-50 hover:text-orange-600 font-medium transition cursor-pointer">近 30 天</button>
-              <button v-if="startDate || endDate" @click="clearDateFilter" class="px-2.5 py-1 text-xs rounded bg-slate-200 text-slate-700 hover:bg-slate-300 font-bold transition cursor-pointer">重置時間</button>
+              <button v-if="!isTodayFilter" @click="clearDateFilter" class="px-2.5 py-1 text-xs rounded bg-slate-200 text-slate-700 hover:bg-slate-300 font-bold transition cursor-pointer">回到當日</button>
             </div>
           </div>
 
@@ -530,8 +530,12 @@
         const loginError = ref(false);
         const loginErrorMessage = ref('');
 
-        const startDate = ref('');
-        const endDate = ref('');
+        // 管理者儀表板預設只看當日；需要查其他日期再自行調整。
+        const getLocalDateKey = (date = new Date()) =>
+          `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        const startDate = ref(getLocalDateKey());
+        const endDate = ref(getLocalDateKey());
+        const isTodayFilter = computed(() => startDate.value === getLocalDateKey() && endDate.value === getLocalDateKey());
 
         // 管理者權限由 Apps Script 後端密碼驗證，不再依賴前端名稱白名單。
         const isAdmin = ref(false);
@@ -666,6 +670,7 @@
                   if (!check || !check.ok) throw new Error('管理者登入已失效');
                   queryLogs.value = Array.isArray(check.queryLogs) ? check.queryLogs : [];
                   missingKeywords.value = Array.isArray(check.missingKeywords) ? check.missingKeywords : [];
+                  setQuickDate('today');
                   syncStatus.value = '已同步';
                 } catch (e) {
                   clearSavedSession();
@@ -764,6 +769,7 @@
             currentReporter.value = sRep;
             isAdmin.value = true;
             adminToken.value = token;
+            setQuickDate('today');
             activeTab.value = 'dashboard';
             showAdminLogin.value = false;
             loginForm.value.adminPassword = '';
@@ -1092,19 +1098,79 @@
             console.error('操作教學查詢紀錄寫入失敗', e);
           }
         };
+        // 未命中關鍵字背景記錄：輸入停頓時自動送出；清除搜尋時會立即補送，
+        // 不必再按「回報」，也不會因每打一個字就新增一筆紀錄。
+        const missingKeywordSent = new Map();
+        const MISSING_SEARCH_DEBOUNCE_MS = 220;
+        let guideMissTimer = null;
+        let faqMissTimer = null;
+
+        const recordMissingKeyword = async (kind, rawQuery) => {
+          const query = String(rawQuery || '').trim().replace(/\s+/g, ' ');
+          if (query.length < 2 || isAdmin.value || !currentStore.value || !currentReporter.value) return;
+          const dedupeKey = [kind, currentStore.value.trim().toLowerCase(), currentReporter.value.trim().toLowerCase(), query.toLowerCase()].join('|');
+          const previousSentAt = Number(missingKeywordSent.get(dedupeKey) || 0);
+          if (previousSentAt && Date.now() - previousSentAt < 5000) return;
+          const sentAt = Date.now();
+          missingKeywordSent.set(dedupeKey, sentAt);
+          try {
+            await postToCloud({
+              action: 'appendMissingKeyword',
+              log: { keyword: query, storeName: currentStore.value, reporter: currentReporter.value }
+            });
+            if (kind === 'guide') guideMissLogged.value = query;
+            else faqMissLogged.value = query;
+          } catch (e) {
+            if (missingKeywordSent.get(dedupeKey) === sentAt) missingKeywordSent.delete(dedupeKey);
+            console.error('未命中關鍵字背景記錄失敗', e);
+          }
+        };
+
+        const hasGuideMatch = (rawQuery) => {
+          const q = String(rawQuery || '').trim().toLowerCase();
+          if (!q) return true;
+          return guides.value.some(item => {
+            if (guideCategory.value !== 'all' && item.category !== guideCategory.value) return false;
+            return [item.title, item.summary || '', item.category, item.keywords || '', ...collectText(item.blocks || [])].join(' ').toLowerCase().includes(q);
+          });
+        };
+
+        const hasFaqMatch = (rawQuery) => {
+          const q = String(rawQuery || '').trim().toLowerCase();
+          if (!q) return true;
+          return faqs.value.some(item => {
+            if (selectedCategory.value !== 'all' && item.category !== selectedCategory.value) return false;
+            return [item.title, item.symptom || '', item.category, item.keywords || '', ...(item.steps || [])]
+              .join(' ').replace(/\*\*/g, '').toLowerCase().includes(q);
+          });
+        };
+
+        const clearGuideSearch = () => {
+          const query = guideSearchQuery.value.trim();
+          clearTimeout(guideMissTimer);
+          if (query && !hasGuideMatch(query)) void recordMissingKeyword('guide', query);
+          guideSearchQuery.value = '';
+        };
+
+        const clearFaqSearch = () => {
+          const query = searchQuery.value.trim();
+          clearTimeout(faqMissTimer);
+          if (query && !hasFaqMatch(query)) void recordMissingKeyword('faq', query);
+          searchQuery.value = '';
+        };
+
         const handleGuideSearchSubmit = async () => {
           const query = guideSearchQuery.value.trim();
           if (!query || isAdmin.value) return;
+          if (!hasGuideMatch(query)) {
+            clearTimeout(guideMissTimer);
+            await recordMissingKeyword('guide', query);
+            return;
+          }
           try {
-            if (filteredGuides.value.length === 0) {
-              if (guideMissLogged.value === query) return;
-              await postToCloud({ action: 'appendMissingKeyword', log: { keyword: query, storeName: currentStore.value, reporter: currentReporter.value } });
-              guideMissLogged.value = query;
-            } else {
-              if (lastGuideSearchLogged === query) return;
-              await postToCloud({ action: 'appendQueryLog', log: { storeName: currentStore.value, reporter: currentReporter.value, faqTitle: '操作教學搜尋', category: '操作教學', keyword: query } });
-              lastGuideSearchLogged = query;
-            }
+            if (lastGuideSearchLogged === query) return;
+            await postToCloud({ action: 'appendQueryLog', log: { storeName: currentStore.value, reporter: currentReporter.value, faqTitle: '操作教學搜尋', category: '操作教學', keyword: query } });
+            lastGuideSearchLogged = query;
           } catch (e) { console.error('操作教學搜尋紀錄寫入失敗', e); }
         };
 
@@ -1185,19 +1251,45 @@
         const handleSearchSubmit = async () => {
           const query = searchQuery.value.trim();
           if (!query || isAdmin.value) return;
-
-          if (filteredFaqs.value.length === 0 && faqMissLogged.value !== query) {
-            try {
-              await postToCloud({
-                action: 'appendMissingKeyword',
-                log: { keyword: query, storeName: currentStore.value, reporter: currentReporter.value }
-              });
-              faqMissLogged.value = query;
-            } catch (e) {
-              console.error('未命中關鍵字寫入失敗', e);
-            }
+          if (filteredFaqs.value.length === 0) {
+            clearTimeout(faqMissTimer);
+            await recordMissingKeyword('faq', query);
           }
         };
+
+        // 防止使用者輸入後立刻清除，清除動作會把上一個未命中詞立即送出。
+        // 停止輸入 220ms 後也會自動記錄；快速連續輸入只記錄最後完整關鍵字。
+        watch([guideSearchQuery, guideCategory], ([newValue], [oldValue]) => {
+          clearTimeout(guideMissTimer);
+          const query = String(newValue || '').trim();
+          if (!query) {
+            const previous = String(oldValue || '').trim();
+            if (previous && !hasGuideMatch(previous)) void recordMissingKeyword('guide', previous);
+            return;
+          }
+          if (hasGuideMatch(query) || isAdmin.value) return;
+          guideMissTimer = setTimeout(() => {
+            if (guideSearchQuery.value.trim() === query && !hasGuideMatch(query)) {
+              void recordMissingKeyword('guide', query);
+            }
+          }, MISSING_SEARCH_DEBOUNCE_MS);
+        }, { flush: 'sync' });
+
+        watch([searchQuery, selectedCategory], ([newValue], [oldValue]) => {
+          clearTimeout(faqMissTimer);
+          const query = String(newValue || '').trim();
+          if (!query) {
+            const previous = String(oldValue || '').trim();
+            if (previous && !hasFaqMatch(previous)) void recordMissingKeyword('faq', previous);
+            return;
+          }
+          if (hasFaqMatch(query) || isAdmin.value) return;
+          faqMissTimer = setTimeout(() => {
+            if (searchQuery.value.trim() === query && !hasFaqMatch(query)) {
+              void recordMissingKeyword('faq', query);
+            }
+          }, MISSING_SEARCH_DEBOUNCE_MS);
+        }, { flush: 'sync' });
 
         // 日期與時間只顯示需要的部分；兼容舊版 API 回傳的 00:00:00 / 1899/12/30。
         const formatDateOnly = (value) => {
@@ -1217,14 +1309,26 @@
           return `${String(match[1]).padStart(2, '0')}:${match[2]}:${match[3] || '00'}`;
         };
 
+        const getDateKey = (value) => {
+          const text = String(value == null ? '' : value).trim();
+          if (!text) return '';
+          const match = text.match(/^(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})/);
+          if (match) return `${match[1]}-${String(match[2]).padStart(2, '0')}-${String(match[3]).padStart(2, '0')}`;
+          const parsed = new Date(text);
+          if (!Number.isNaN(parsed.getTime()) && parsed.getFullYear() > 1900) {
+            return `${parsed.getFullYear()}-${String(parsed.getMonth() + 1).padStart(2, '0')}-${String(parsed.getDate()).padStart(2, '0')}`;
+          }
+          return '';
+        };
+
         const filteredLogs = computed(() => {
           return queryLogs.value.filter(log => {
-            if (!log.dateOnly) return true;
-            const logDateStr = formatDateOnly(log.dateOnly).replace(/\//g, '-');
-
-            if (startDate.value && logDateStr < startDate.value) return false;
-            if (endDate.value && logDateStr > endDate.value) return false;
-
+            if (!startDate.value && !endDate.value) return true;
+            const dateKey = getDateKey(log.dateOnly || log.date || log.timestamp);
+            // 日期篩選時，沒有可辨識日期的舊資料不混入「當日」結果。
+            if (!dateKey) return false;
+            if (startDate.value && dateKey < startDate.value) return false;
+            if (endDate.value && dateKey > endDate.value) return false;
             return true;
           });
         });
@@ -1278,7 +1382,7 @@
           }
         };
 
-        const clearDateFilter = () => { startDate.value = ''; endDate.value = ''; };
+        const clearDateFilter = () => setQuickDate('today');
 
         const clearAllLogs = async () => {
           if (!isAdmin.value || !adminToken.value) return alert('請先以管理者身分登入。');
@@ -1332,23 +1436,11 @@
           return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         };
 
-        const getDateKey = (value) => {
-          const text = String(value == null ? '' : value).trim();
-          if (!text) return '';
-          const match = text.match(/^(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})/);
-          if (match) return `${match[1]}-${String(match[2]).padStart(2, '0')}-${String(match[3]).padStart(2, '0')}`;
-          const parsed = new Date(text);
-          if (!Number.isNaN(parsed.getTime()) && parsed.getFullYear() > 1900) {
-            return `${parsed.getFullYear()}-${String(parsed.getMonth() + 1).padStart(2, '0')}-${String(parsed.getDate()).padStart(2, '0')}`;
-          }
-          return '';
-        };
-
         const filteredMissingKeywords = computed(() => missingKeywords.value.filter(item => {
           if (!startDate.value && !endDate.value) return true;
           const dateKey = getDateKey(item.time || item.dateOnly || item.timestamp);
-          // 舊資料若沒有可辨識的日期，保留匯出，避免未命中關鍵字被漏掉。
-          if (!dateKey) return true;
+          // 日期篩選時，沒有可辨識日期的舊資料不混入當日報表。
+          if (!dateKey) return false;
           if (startDate.value && dateKey < startDate.value) return false;
           if (endDate.value && dateKey > endDate.value) return false;
           return true;
@@ -1366,9 +1458,7 @@
           if (startDate.value && endDate.value) {
             const start = new Date(`${startDate.value}T00:00:00`);
             const end = new Date(`${endDate.value}T00:00:00`);
-            const days = Math.round((end - start) / 86400000) + 1;
-            const suffix = days === 7 ? '+7d' : (days === 30 ? '+30d' : '');
-            return `${compactDate(startDate.value)}-${compactDate(endDate.value)}${suffix}`;
+            return `${compactDate(startDate.value)}-${compactDate(endDate.value)}`;
           }
           if (startDate.value) return `${compactDate(startDate.value)}-迄今`;
           if (endDate.value) return `不限-${compactDate(endDate.value)}`;
@@ -1429,20 +1519,24 @@
           else if (activeFaq.value) activeFaq.value = null;
         };
         onMounted(() => window.addEventListener('keydown', onKeydown));
-        onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown));
+        onBeforeUnmount(() => {
+          window.removeEventListener('keydown', onKeydown);
+          clearTimeout(guideMissTimer);
+          clearTimeout(faqMissTimer);
+        });
         watch(() => !!(activeGuide.value || activeFaq.value || zoomImg.value), (open) => {
           document.body.style.overflow = open ? 'hidden' : '';
         });
 
         return {
           catMeta, catStyle, activeTab, searchQuery, selectedCategory, categories, faqs, filteredFaqs,
-          guides, filteredGuides, guideSearchQuery, guideCategory, guideCategories, activeGuide, openGuide, handleGuideSearchSubmit,
+          guides, filteredGuides, guideSearchQuery, guideCategory, guideCategories, activeGuide, openGuide, handleGuideSearchSubmit, clearGuideSearch,
           guideMissLogged, faqMissLogged, zoomImg, rich, tone,
           currentStore, currentReporter, loginForm, loginError, loginStore, loginAdmin, showAdminLogin, isAdminLoggingIn, logoutStore,
           queryLogs, missingKeywords, filteredLogs, filteredMissingKeywords, filteredUniqueStoresCount, groupedLogs,
           toggleStoreExpand, isExpanded, activeFaq, openFaqModal, isAdmin,
-          startDate, endDate, setQuickDate, clearDateFilter, clearAllLogs,
-          handleSearchSubmit, exportToExcel, refreshDashboard, syncStatus, loginErrorMessage,
+          startDate, endDate, isTodayFilter, setQuickDate, clearDateFilter, clearAllLogs,
+          handleSearchSubmit, clearFaqSearch, exportToExcel, refreshDashboard, syncStatus, loginErrorMessage,
           formatDateOnly, formatTimeOnly
         };
       }
