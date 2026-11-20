@@ -368,7 +368,6 @@
         <li v-for="v in uniqueViewers" :key="v.store + '|' + v.reporter"><i class="fa-solid fa-store mr-1.5 text-slate-400"></i>{{ v.store }}<span class="mx-1.5 text-slate-300">｜</span>{{ v.reporter }}</li>
         <li class="pt-1 text-xs text-slate-400">最後更新：{{ viewersUpdatedAt || '尚未更新' }}（每 30 秒自動更新）<button type="button" @click="refreshViewers" class="ml-2 underline cursor-pointer">立即更新</button></li>
         <li v-if="viewersStatus" class="text-xs leading-relaxed text-rose-700">{{ viewersStatus }}</li>
-        <li v-if="heartbeatStatus" class="text-xs text-slate-500">{{ heartbeatStatus }}</li>
       </ul>
     </div>
 
