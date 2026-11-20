@@ -1465,15 +1465,14 @@
         const guides = ref([
           {
             id: 1, category: '版本更新', title: 'POS 機顯示 Beta 過期',
-            summary: '主機提示 Beta 版本過期時，請到主機的 App Store 更新肚肚 POS。',
             keywords: 'beta 過期 更新 app store 主機',
             images: [],
             blocks: [
               { type: 'steps', items: [
-                '在 **POS 主機**開啟 **App Store** [[appstore]]（藍底白色 A 字的圖示）。',
+                '到 **主機**開啟 **App Store** [[appstore]]。',
                 { text: '搜尋「**肚肚 POS**」。', img: IMG.search, cap: 'App Store 搜尋畫面', w: 420 },
-                '搜尋到之後，**再點進肚肚 POS 的詳細頁面**，才會顯示「更新」。',
-                { text: '點選「**更新**」，等待更新完成後再開啟 POS。', img: IMG.update, cap: '詳細頁面的「更新」按鈕', w: 300 }
+                {text: '搜尋到之後，**再點進肚肚 POS 的詳細頁面**，才會顯示「更新」。',img: IMG.update, w: 300 },
+                '點選「**更新**」，等待更新完成後再開啟 POS。'
               ] }
             ]
           },
