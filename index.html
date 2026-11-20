@@ -9,25 +9,25 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     /* 全站文字字級增加 2px，不連帶放大卡片間距或版面尺寸。 */
-    body { font-size: 18px; }
-    .text-xs { font-size: calc(.75rem + 2px) !important; }
-    .text-sm { font-size: calc(.875rem + 2px) !important; }
-    .text-base { font-size: calc(1rem + 2px) !important; }
-    .text-lg { font-size: calc(1.125rem + 2px) !important; }
-    .text-xl { font-size: calc(1.25rem + 2px) !important; }
-    .text-2xl { font-size: calc(1.5rem + 2px) !important; }
-    .text-3xl { font-size: calc(1.875rem + 2px) !important; }
-    [class~="text-[10px]"] { font-size: 12px !important; }
-    [class~="text-[11px]"] { font-size: 13px !important; }
-    [class~="text-[12px]"] { font-size: 14px !important; }
-    [class~="text-[13px]"] { font-size: 15px !important; }
-    [class~="text-[14px]"] { font-size: 16px !important; }
-    [class~="text-[15px]"] { font-size: 17px !important; }
-    [class~="text-[16px]"] { font-size: 18px !important; }
+    body { font-size: 1.125rem; }
+    .text-xs { font-size: calc(.75rem + .125rem) !important; }
+    .text-sm { font-size: calc(.875rem + .125rem) !important; }
+    .text-base { font-size: calc(1rem + .125rem) !important; }
+    .text-lg { font-size: calc(1.125rem + .125rem) !important; }
+    .text-xl { font-size: calc(1.25rem + .125rem) !important; }
+    .text-2xl { font-size: calc(1.5rem + .125rem) !important; }
+    .text-3xl { font-size: calc(1.875rem + .125rem) !important; }
+    [class~="text-[10px]"] { font-size: 0.75rem !important; }
+    [class~="text-[11px]"] { font-size: 0.8125rem !important; }
+    [class~="text-[12px]"] { font-size: 0.875rem !important; }
+    [class~="text-[13px]"] { font-size: 0.9375rem !important; }
+    [class~="text-[14px]"] { font-size: 1rem !important; }
+    [class~="text-[15px]"] { font-size: 1.0625rem !important; }
+    [class~="text-[16px]"] { font-size: 1.125rem !important; }
 
 
     body { font-family:'Noto Sans TC','PingFang TC','Microsoft JhengHei',system-ui,sans-serif; background:#F6F5F3; }
-    .chip { display:inline-flex; align-items:center; gap:6px; font-size:17px; font-weight:500; color:#6b6560; }
+    .chip { display:inline-flex; align-items:center; gap:6px; font-size:1.0625rem; font-weight:500; color:#6b6560; }
     .chip::before { content:''; width:7px; height:7px; border-radius:50%; background:var(--c); }
     .chip i, .tile { display:none; }
     .card-accent { transition:border-color .15s, box-shadow .15s; }
@@ -38,30 +38,30 @@
     .scrollbar-none::-webkit-scrollbar { display: none; }
 
     /* 閱讀層級：卡片標題、段落標題與內文清楚區分。 */
-    .chip { font-size: 13px; line-height: 1.4; }
-    button { font-size: 14px; line-height: 1.35; }
-    button.text-xs, button .text-xs { font-size: 12px !important; }
-    button.text-sm, button .text-sm { font-size: 13px !important; }
-    button.text-base, button .text-base { font-size: 14px !important; }
-    .nav-secondary-label { font-size: 11px !important; line-height: 1.25; }
-    .nav-primary-label { font-size: 13px !important; line-height: 1.25; }
+    .chip { font-size: 0.8125rem; line-height: 1.4; }
+    button { font-size: 0.875rem; line-height: 1.35; }
+    button.text-xs, button .text-xs { font-size: 0.75rem !important; }
+    button.text-sm, button .text-sm { font-size: 0.8125rem !important; }
+    button.text-base, button .text-base { font-size: 0.875rem !important; }
+    .nav-secondary-label { font-size: 0.6875rem !important; line-height: 1.25; }
+    .nav-primary-label { font-size: 0.8125rem !important; line-height: 1.25; }
     .card-title, .knowledge-card-title {
-      font-size: 14px !important; line-height: 1.5; font-weight: 700;
+      font-size: 0.875rem !important; line-height: 1.5; font-weight: 700;
     }
     .guide-card-summary, .faq-card-summary, .knowledge-card-summary {
-      font-size: 13px !important; line-height: 1.7;
+      font-size: 0.8125rem !important; line-height: 1.7;
     }
-    #guideModalTitle, #faqModalTitle { font-size: 18px !important; line-height: 1.45; }
+    #guideModalTitle, #faqModalTitle { font-size: 1.125rem !important; line-height: 1.45; }
     .guide-section-title, .faq-section-title {
-      font-size: 15px !important; line-height: 1.5; font-weight: 700;
+      font-size: 0.9375rem !important; line-height: 1.5; font-weight: 700;
     }
     .guide-body-copy, .faq-field-copy, .faq-step-copy {
-      font-size: 14px !important; line-height: 1.85 !important;
+      font-size: 0.875rem !important; line-height: 1.85 !important;
     }
-    .guide-note-content { font-size: 14px !important; line-height: 1.8 !important; }
-    .guide-note-title { display:block; margin-bottom: 4px; font-size: 14.5px !important; line-height: 1.5; font-weight: 700; }
-    .guide-note-copy { font-size: 14px !important; line-height: 1.8 !important; }
-    .faq-field-title { font-size: 14px !important; line-height: 1.5; font-weight: 700; }
+    .guide-note-content { font-size: 0.875rem !important; line-height: 1.8 !important; }
+    .guide-note-title { display:block; margin-bottom: 4px; font-size: 0.9062rem !important; line-height: 1.5; font-weight: 700; }
+    .guide-note-copy { font-size: 0.875rem !important; line-height: 1.8 !important; }
+    .faq-field-title { font-size: 0.875rem !important; line-height: 1.5; font-weight: 700; }
     .faq-steps-list { display:flex; flex-direction:column; gap:18px; }
     .faq-steps-list > li { align-items:flex-start; }
 
@@ -74,8 +74,8 @@
 
     @media (max-width: 420px) {
       #app { padding-left: 10px; padding-right: 10px; }
-      .nav-primary-label { font-size: 12px !important; }
-      .nav-secondary-label { font-size: 10.5px !important; }
+      .nav-primary-label { font-size: 0.75rem !important; }
+      .nav-secondary-label { font-size: 0.6562rem !important; }
       #guideModal .guide-modal-content, #faqModal .space-y-5 { padding-left: 14px; padding-right: 14px; }
     }
   
@@ -151,13 +151,13 @@
 
     /* 文字層級統一：內文略放大、增加行距；步驟一段一段呈現。 */
     #guideModalTitle, #faqModalTitle {
-      font-size: 20px !important;
+      font-size: 1.25rem !important;
       line-height: 1.45 !important;
       overflow-wrap: anywhere;
     }
     #guideModal .guide-section-title,
     #faqModal .faq-section-title {
-      font-size: 16px !important;
+      font-size: 1rem !important;
       line-height: 1.55 !important;
       margin-bottom: 12px;
     }
@@ -166,19 +166,19 @@
     #guideModal .guide-note-copy,
     #faqModal .faq-field-copy,
     #faqModal .faq-step-copy {
-      font-size: 15px !important;
+      font-size: 0.9375rem !important;
       line-height: 1.85 !important;
       letter-spacing: .01em;
       color: #475569;
     }
     #guideModal .guide-note-title,
     #faqModal .faq-field-title {
-      font-size: 15px !important;
+      font-size: 0.9375rem !important;
       line-height: 1.55 !important;
       margin-bottom: 6px;
     }
     #guideModal .guide-modal-content > p {
-      font-size: 15px !important;
+      font-size: 0.9375rem !important;
       line-height: 1.85 !important;
       letter-spacing: .01em;
       color: #475569;
@@ -211,18 +211,18 @@
     #faqModal .faq-step-copy strong { color: #b94712; }
 
     /* 複製／傳送內容預覽：讓使用者看到會複製的文字 */
-    #guideModal .guide-copy-label { font-size: 13px !important; line-height: 1.4 !important; font-weight: 700; color: #64748b; margin-bottom: 6px; }
-    #guideModal .guide-copy-text { font-size: 16px !important; line-height: 1.8 !important; color: #1e293b; white-space: pre-wrap; overflow-wrap: anywhere; user-select: text; }
-    #guideModal .guide-note-actions button { font-size: 15px !important; padding: 10px 14px; flex: 1 1 150px; }
+    #guideModal .guide-copy-label { font-size: 0.8125rem !important; line-height: 1.4 !important; font-weight: 700; color: #64748b; margin-bottom: 6px; }
+    #guideModal .guide-copy-text { font-size: 1rem !important; line-height: 1.8 !important; color: #1e293b; white-space: pre-wrap; overflow-wrap: anywhere; user-select: text; }
+    #guideModal .guide-note-actions button { font-size: 0.9375rem !important; padding: 10px 14px; flex: 1 1 150px; }
     /* 大字級內容（教學資料設 largeText:true 時啟用） */
-    #guideModal.guide-lg .guide-note-title { font-size: 19px !important; line-height: 1.5 !important; margin-bottom: 8px; }
+    #guideModal.guide-lg .guide-note-title { font-size: 1.1875rem !important; line-height: 1.5 !important; margin-bottom: 8px; }
     #guideModal.guide-lg .guide-note-content,
     #guideModal.guide-lg .guide-note-copy,
-    #guideModal.guide-lg .guide-body-copy { font-size: 18px !important; line-height: 1.9 !important; }
-    #guideModal.guide-lg .guide-note-actions button { font-size: 16px !important; padding: 11px 16px; }
-    #guideModal.guide-lg .guide-copy-label { font-size: 14px !important; }
-    #guideModal.guide-lg .guide-copy-text { font-size: 18px !important; }
-    #guideModal.guide-lg figcaption { font-size: 15px !important; }
+    #guideModal.guide-lg .guide-body-copy { font-size: 1.125rem !important; line-height: 1.9 !important; }
+    #guideModal.guide-lg .guide-note-actions button { font-size: 1rem !important; padding: 11px 16px; }
+    #guideModal.guide-lg .guide-copy-label { font-size: 0.875rem !important; }
+    #guideModal.guide-lg .guide-copy-text { font-size: 1.125rem !important; }
+    #guideModal.guide-lg figcaption { font-size: 0.9375rem !important; }
 
     @media (max-width: 640px) {
       #guideModal, #faqModal {
@@ -320,7 +320,12 @@
           <p class="text-xs text-slate-500 truncate">{{ currentStore }}（{{ currentReporter }}）<span v-if="isAdmin" class="ml-1 rounded bg-amber-100 px-1.5 py-0.5 font-bold text-amber-800">管理者模式</span></p>
         </div>
       </div>
-      <button @click="logoutStore" class="shrink-0 text-xs px-3 py-1.5 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-50 transition cursor-pointer">登出</button>
+      <div class="shrink-0 flex items-center gap-2">
+        <div role="group" aria-label="字體大小" class="flex overflow-hidden rounded-lg border border-slate-300 text-xs">
+          <button v-for="opt in fontSizeOptions" :key="opt.key" type="button" @click="setFontSize(opt.key)" :aria-pressed="fontSizeKey === opt.key" :class="fontSizeKey === opt.key ? 'bg-slate-800 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'" class="px-2.5 py-1.5 font-bold transition cursor-pointer">{{ opt.label }}</button>
+        </div>
+        <button @click="logoutStore" class="text-xs px-3 py-1.5 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-50 transition cursor-pointer">登出</button>
+      </div>
     </header>
 
     <!-- 主功能：四個入口固定同一列；主要入口較大，輔助入口較精簡 -->
@@ -355,9 +360,20 @@
     </div>
 
     <div v-if="isAdmin" class="mb-6">
-      <button @click="activeTab = 'dashboard'" :class="activeTab === 'dashboard' ? 'bg-amber-100 text-amber-800 border-amber-300' : 'bg-white text-slate-600 border-slate-200 hover:bg-amber-50'" class="w-full border rounded-lg px-4 py-2.5 text-sm font-bold transition flex justify-center items-center gap-2 cursor-pointer">
-        <i class="fa-solid fa-chart-pie"></i> 後台：門市查詢儀表板
-      </button>
+      <div class="flex items-stretch gap-2">
+        <button @click="activeTab = 'dashboard'" :class="activeTab === 'dashboard' ? 'bg-amber-100 text-amber-800 border-amber-300' : 'bg-white text-slate-600 border-slate-200 hover:bg-amber-50'" class="flex-1 min-w-0 border rounded-lg px-4 py-2.5 text-sm font-bold transition flex justify-center items-center gap-2 cursor-pointer">
+          <i class="fa-solid fa-chart-pie"></i> 後台：門市查詢儀表板
+        </button>
+        <button type="button" @click="viewersExpanded = !viewersExpanded" :aria-expanded="viewersExpanded" class="shrink-0 border rounded-lg px-3 py-2.5 text-sm font-bold transition flex items-center gap-2 cursor-pointer bg-white text-slate-700 border-slate-200 hover:bg-emerald-50">
+          <span class="inline-block h-2 w-2 rounded-full bg-emerald-500"></span>
+          線上查看 {{ uniqueViewers.length }} 人
+          <i class="fa-solid fa-chevron-down text-xs transition-transform" :class="viewersExpanded ? 'rotate-180' : ''"></i>
+        </button>
+      </div>
+      <ul v-if="viewersExpanded" class="mt-2 space-y-1 rounded-lg border border-slate-200 bg-white p-3 text-sm text-slate-700">
+        <li v-if="uniqueViewers.length === 0" class="text-slate-400">目前沒有人在線上查看。</li>
+        <li v-for="v in uniqueViewers" :key="v.store + '|' + v.reporter"><i class="fa-solid fa-store mr-1.5 text-slate-400"></i>{{ v.store }}<span class="mx-1.5 text-slate-300">｜</span>{{ v.reporter }}</li>
+      </ul>
     </div>
 
     <!-- 操作教學：卡片列表（分類篩選 + 搜尋），點開後以步驟＋圖片呈現 -->
@@ -672,6 +688,7 @@
                     <p class="guide-body-copy text-sm leading-relaxed text-slate-700" v-html="rich(s.text || s)"></p>
                     <button v-if="s.img" type="button" @click="zoomImg = { src: s.img, caption: s.cap || '' }" class="guide-image-button mt-2 cursor-zoom-in"><img :src="s.img" :alt="s.cap" class="step-img rounded-lg border border-slate-200 bg-white" :style="{ maxWidth: (s.w || 420) + 'px' }"></button>
                     <p v-if="s.img && s.cap" class="mt-1 text-xs text-slate-500">{{ s.cap }}</p>
+                    <a v-if="s.url" :href="s.url" target="_blank" rel="noopener noreferrer" class="mt-2 inline-flex items-center gap-1 text-xs font-bold text-sky-700 underline">{{ s.linkLabel || '開啟參考連結' }} <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                   </div>
                   </li>
                 </ol>
@@ -744,6 +761,7 @@
                     <p v-if="block.title" class="guide-note-title">{{ block.title }}</p>
                     <p class="guide-note-copy" v-html="rich(block.text)"></p>
                     <a v-if="block.url" :href="block.url" target="_blank" rel="noopener noreferrer" class="mt-2 inline-flex items-center gap-1 text-xs font-bold underline">{{ block.linkLabel || '開啟參考連結' }} <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                    <button v-if="block.jumpTitle" type="button" @click="jumpToTitle(block.jumpTitle)" class="mt-2 inline-flex items-center gap-1 rounded-lg border border-current bg-white/80 px-2.5 py-1.5 text-xs font-bold cursor-pointer">{{ block.jumpLabel || '前往相關說明' }} <i class="fa-solid fa-arrow-right"></i></button>
                   </div>
                 </div>
                 <div v-if="block.copyText" class="guide-copy-preview mt-3 rounded-lg border border-dashed border-slate-300 bg-white p-3">
@@ -1030,6 +1048,79 @@
           });
         };
 
+        // ===== 字體大小：右上角「小／標準／大」，選擇會記在這台裝置 =====
+        const FONT_SIZE_STORAGE_KEY = 'posSupportFontSizeV1';
+        const FONT_SIZE_SCALE = { sm: '87.5%', md: '100%', lg: '120%' };
+        const fontSizeOptions = [
+          { key: 'sm', label: '小' },
+          { key: 'md', label: '標準' },
+          { key: 'lg', label: '大' }
+        ];
+        const fontSizeKey = ref('md');
+        const setFontSize = (key) => {
+          if (!FONT_SIZE_SCALE[key]) return;
+          fontSizeKey.value = key;
+          document.documentElement.style.fontSize = FONT_SIZE_SCALE[key];
+          try { localStorage.setItem(FONT_SIZE_STORAGE_KEY, key); } catch (e) { /* 無法保存時仍可正常使用 */ }
+        };
+        try {
+          const savedFontSize = localStorage.getItem(FONT_SIZE_STORAGE_KEY);
+          if (FONT_SIZE_SCALE[savedFontSize]) setFontSize(savedFontSize);
+        } catch (e) { /* 忽略讀取失敗 */ }
+
+        // ===== 管理者帳號：門市名稱與名字需同時符合，另需輸入試算表驗證碼 =====
+        // 注意：這裡只是前端第一道檢查（程式碼是公開的，可被繞過）。
+        // 真正的權限控管必須在 Apps Script 的 adminLogin 再檢查一次（見說明）。
+        const ADMIN_ACCOUNTS = [
+          { store: 'a0948', name: 'a0948' },
+          { store: 'a0450', name: 'a0450' }
+        ];
+        const isAdminAccount = (store, name) => {
+          const s = String(store || '').trim().toLowerCase();
+          const n = String(name || '').trim().toLowerCase();
+          return ADMIN_ACCOUNTS.some(acc => acc.store === s && acc.name === n);
+        };
+
+        // ===== 線上查看者：後台可看到目前在線上的門市與使用者（不含其他資訊） =====
+        // 每 60 秒回報一次；分頁在背景時不回報；登出時通知雲端移除。
+        const onlineViewers = ref([]);
+        const viewersExpanded = ref(false);
+        const uniqueViewers = computed(() => {
+          const seen = new Set();
+          return onlineViewers.value.filter(v => {
+            const key = (v.store || '') + '｜' + (v.reporter || '');
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+          });
+        });
+        const viewerSessionId = (() => {
+          try {
+            const bytes = new Uint8Array(8);
+            window.crypto.getRandomValues(bytes);
+            return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+          } catch (e) {
+            return Date.now().toString(16) + Math.random().toString(16).slice(2, 8);
+          }
+        })();
+        const sendHeartbeat = () => {
+          if (!currentStore.value || !currentReporter.value) return;
+          if (document.visibilityState !== 'visible') return;
+          postToCloud({ action: 'heartbeat', sessionId: viewerSessionId, store: currentStore.value, reporter: currentReporter.value }).catch(() => {});
+        };
+        const sendLeave = () => {
+          postToCloud({ action: 'leave', sessionId: viewerSessionId }).catch(() => {});
+        };
+        watch(currentStore, (store) => { if (store) sendHeartbeat(); });
+
+        // 提醒內的「前往相關說明」：可跳到故障排除或其他教學
+        const jumpToTitle = (title) => {
+          const faq = faqs.value.find(item => item.title === title);
+          if (faq) { activeGuide.value = null; openFaqModal(faq); return; }
+          const guide = guides.value.find(item => item.title === title);
+          if (guide) { openGuide(guide); }
+        };
+
         const createAdminToken = () => {
           if (!window.crypto || !window.crypto.getRandomValues) {
             throw new Error('此瀏覽器無法產生安全登入憑證，請使用 HTTPS 網址開啟網站。');
@@ -1050,6 +1141,7 @@
             }
             queryLogs.value = Array.isArray(data.queryLogs) ? data.queryLogs : [];
             missingKeywords.value = Array.isArray(data.missingKeywords) ? data.missingKeywords : [];
+            onlineViewers.value = Array.isArray(data.onlineViewers) ? data.onlineViewers : [];
             syncStatus.value = '已同步  ' ;
           } catch (e) {
             console.error('雲端讀取失敗', e);
@@ -1077,7 +1169,7 @@
               currentReporter.value = saved.reporter;
               loginForm.value.storeName = saved.storeName;
               loginForm.value.reporter = saved.reporter;
-              if (saved.isAdmin && saved.adminToken) {
+              if (saved.isAdmin && saved.adminToken && isAdminAccount(saved.storeName, saved.reporter)) {
                 isAdmin.value = true;
                 adminToken.value = saved.adminToken;
                 activeTab.value = 'dashboard';
@@ -1087,6 +1179,7 @@
                   queryLogs.value = Array.isArray(check.queryLogs) ? check.queryLogs : [];
                   missingKeywords.value = Array.isArray(check.missingKeywords) ? check.missingKeywords : [];
                   setQuickDate('today');
+                  onlineViewers.value = Array.isArray(check.onlineViewers) ? check.onlineViewers : [];
                   syncStatus.value = '已同步';
                 } catch (e) {
                   clearSavedSession();
@@ -1101,6 +1194,8 @@
               }
             }
           } catch (e) { clearSavedSession(); console.warn('還原登入狀態失敗', e); }
+          // 線上查看者每 60 秒回報一次。
+          setInterval(sendHeartbeat, 60000);
           // 每 30 秒更新；分頁在背景時不輪詢，避免不必要的 Apps Script 執行。
           setInterval(() => {
             if (document.visibilityState === 'visible' && isAdmin.value && activeTab.value === 'dashboard') {
@@ -1150,6 +1245,11 @@
             loginErrorMessage.value = '請先填寫門市名稱與名字！';
             return;
           }
+          if (!isAdminAccount(sName, sRep)) {
+            loginError.value = true;
+            loginErrorMessage.value = '此門市名稱與名字沒有管理者權限。';
+            return;
+          }
           if (!adminPassword.trim()) {
             loginError.value = true;
             loginErrorMessage.value = '請輸入管理者專用密碼。';
@@ -1168,7 +1268,7 @@
             const token = createAdminToken();
 
             const postStartedAt = performance.now();
-            await postToCloud({ action: 'adminLogin', password: adminPassword, token: token });
+            await postToCloud({ action: 'adminLogin', password: adminPassword, token: token, storeName: sName, reporter: sRep });
             postMs = Math.round(performance.now() - postStartedAt);
 
             const getStartedAt = performance.now();
@@ -1183,6 +1283,7 @@
 
             currentStore.value = sName;
             currentReporter.value = sRep;
+            onlineViewers.value = Array.isArray(data.onlineViewers) ? data.onlineViewers : [];
             isAdmin.value = true;
             adminToken.value = token;
             setQuickDate('today');
@@ -1231,6 +1332,9 @@
         const logoutStore = () => {
           const confirmLogout = confirm('⚠️ 確定要登出當前使用者 / 門市嗎？');
           if (!confirmLogout) return;
+          sendLeave();
+          onlineViewers.value = [];
+          viewersExpanded.value = false;
           if (isAdmin.value && adminToken.value) {
             postToCloud({ action: 'adminLogout', token: adminToken.value }).catch(console.error);
           }
@@ -1268,6 +1372,7 @@
           '員工打卡': { icon: 'fa-solid fa-user-clock', c: '#0369A1', s: '#E0F2FE' },
           '會員與你訂': { icon: 'fa-solid fa-users', c: '#0F766E', s: '#CCFBF1' },
           '平板設定': { icon: 'fa-solid fa-tablet-screen-button', c: '#475569', s: '#F1F5F9' },
+          '客顯設定': { icon: 'fa-solid fa-desktop', c: '#0E7490', s: '#CFFAFE' },
           '知識小補充': { icon: 'fa-solid fa-lightbulb', c: '#A16207', s: '#FEF3C7' },
           '你訂與營業設定': { icon: 'fa-solid fa-calendar-check', c: '#0F766E', s: '#CCFBF1' }
         };
@@ -1486,10 +1591,9 @@
               { type: 'steps', title: '開通前請留意', items: [
                 '總公司業務督導因公務需求，需要了解店鋪營運狀況，**請勿將此角色停權**；若調整此設定，將影響門店使用員工打卡的權利。',
                 '工作時數的分鐘數目前**無法自動換算成小數小時**，需自行換算（例如：7 小時 43 分鐘無法自動換算為 7.5 小時 13 分鐘）。',
-                '員工管理操作流程請參考下方 Notion 說明。'
+                { text: '員工管理操作流程請點選下方連結查看說明。', url: 'https://artistic-hen-792.notion.site/916f09246d7f4c429e14a657af2cd845', linkLabel: '開啟員工管理操作流程（Notion）' }
               ] },
-              { type: 'note', tone: 'amber', title: '開通前確認同意', text: '若您已了解目前已知問題及操作設定，請至肚肚群組回覆下方文字。', copyText: '我已了解打卡功能目前已知的問題及操作設定，我同意開啟打卡功能' },
-              { type: 'note', tone: 'sky', title: '員工管理操作流程', text: '點選下方連結查看操作說明。', url: 'https://artistic-hen-792.notion.site/916f09246d7f4c429e14a657af2cd845', linkLabel: '開啟員工管理操作流程' }
+              { type: 'note', tone: 'amber', title: '開通前確認同意', text: '若您已了解目前已知問題及操作設定，請至肚肚群組回覆下方文字。', copyText: '我已了解打卡功能目前已知的問題及操作設定，我同意開啟打卡功能' }
             ]
           },
           {
@@ -1677,6 +1781,129 @@
               ] },
               { type: 'note', tone: 'amber', title: '注意', text: '盡量讓我的網路剩下DudOO_5G' }
             ]
+          },
+          {
+            id: 2001, category: 'POS設定', title: '商品停售教學',
+            summary: '各版菜單並未連動，要停售商品時，請依販售管道分別到 POS 機、你訂助手或各平台後台操作。',
+            keywords: '停售 停賣 售完 下架 商品 菜單 掃碼點餐 你訂 你訂助手 停賣管理 foodpanda uber eats 各平台',
+            images: [],
+            blocks: [
+              { type: 'note', tone: 'amber', title: '先了解：各版菜單並未連動', text: '各販售管道的菜單是分開的，所以**要停售商品時，請至各後台分別做停售**。只在 POS 機停售，其他管道仍可能照常販售。' },
+              { type: 'options', title: '依販售管道前往停售', tone: 'orange', hint: '每個管道各自操作', options: [
+                { label: 'POS 機', text: '在 **POS 機**上直接操作。' },
+                { label: '掃碼點餐', text: '在 **POS 機**上**先切換至「掃碼點餐」菜單**，再進行停售操作。' },
+                { label: '你訂', text: '至「**你訂助手**」的「**停賣管理**」進行停售。' },
+                { label: 'FoodPanda、Uber Eats', text: '請至**各自的機子（各平台後台）**進行停售。' }
+              ] }
+            ]
+          },
+          {
+            id: 2002, category: '客顯設定', title: '客顯配對教學',
+            summary: '第一次使用客顯時，需在主機開啟配對，再到客顯 iPad 登入並輸入主機上的配對碼。',
+            keywords: '客顯 顧客顯示 配對 CDS 配對碼 客顯 iPad 打勾 週邊硬體',
+            images: [],
+            blocks: [
+              { type: 'steps', title: '配對步驟', items: [
+                '在**主機**左下角的「**…**」（三個點），進入「**週邊硬體**」，再點選「**顧客顯示系統**」。',
+                '點選「**開啟配對顧客顯示系統**」。',
+                '開啟後，到**客顯 iPad**，選擇「**CDS 登入**」。',
+                '登入後，輸入**主機上的配對碼**進行配對。',
+                '配對成功後，客顯**右下角會顯示打勾符號**。'
+              ] },
+              { type: 'note', tone: 'sky', title: '影片教學', text: '若步驟不熟悉，可以參考影片教學。', url: 'https://www.youtube.com/watch?v=8MkU2i59bgM', linkLabel: '觀看客顯配對影片教學' }
+            ]
+          },
+          {
+            id: 2003, category: '客顯設定', title: '客顯斷線重新配對教學',
+            summary: '客顯右下角出現連線異常符號時，請依下列方式重新配對。',
+            keywords: '客顯 斷線 連線異常 重新配對 配對碼 登出 CDS 斷線符號',
+            images: [],
+            blocks: [
+              { type: 'steps', title: '重新配對步驟', items: [
+                '到**主機**左下角「**…**」→「**週邊硬體**」→「**顧客顯示系統**」，將「**配對顧客顯示系統**」**關閉**後再**重新開啟**，取得**新的配對碼**。',
+                '回到**客顯 iPad**，點選右下角的**斷線符號**，選擇「**重新配對**」，輸入新的配對碼。',
+                '配對成功後，右下角會顯示**打勾符號**。'
+              ] },
+              { type: 'note', tone: 'sky', title: '另一種做法', text: '也可以在客顯 iPad 點選「**登出**」，再重新登入，輸入新的配對碼。' },
+              { type: 'note', tone: 'sky', title: '影片教學', text: '若步驟不熟悉，可以參考影片教學。', url: 'https://www.youtube.com/watch?v=5sGXmxOZg8o', linkLabel: '觀看客顯重新配對影片教學' }
+            ]
+          },
+          {
+            id: 2004, category: '異常進單', title: '站區會漏單怎麼辦？',
+            summary: '出單機透過網路接收訂單，網路不穩時可能造成漏單、延遲出單或無法出單。',
+            keywords: '漏單 站區 出單 延遲 無法出單 網路 數據機 分享器 重置網路設定 Dudoo5G',
+            images: [],
+            blocks: [
+              { type: 'steps', title: '處理步驟', items: [
+                '建議在**空檔時**，先將店內網路設備（**電信數據機**、**肚肚分享器**）**關閉電源約 30 秒**，再重新開啟電源。',
+                '等待網路恢復後，確認平板 **Wi-Fi 已重新連線**，再觀察是否還會漏單。',
+                '若依舊漏單，到 iPad「**設定**」→「**一般**」，往下滑找到「**移轉或重置 iPad**」，點選後再點選下方「**重置**」，接著點選「**重置網路設定**」。',
+                '重置後，請到 Wi-Fi 重新連回 **Dudoo5G**，再營運看看是否恢復正常。'
+              ] },
+              { type: 'note', tone: 'amber', title: '注意', text: '重置網路設定後，平板已儲存的 Wi-Fi 資料會被清除，需要重新連線並輸入密碼。' }
+            ]
+          },
+          {
+            id: 2005, category: '你訂相關', title: '你訂的單刪除不掉',
+            summary: '你訂訂單無法刪除時，先重新啟動 APP 確認；若仍未消失，請至肚肚 LINE 群組回報。',
+            keywords: '你訂 刪除 刪不掉 訂單 APP 滑掉 重啟 回報',
+            images: [],
+            blocks: [
+              { type: 'steps', title: '處理步驟', items: [
+                '將**你訂 APP 滑掉完全關閉**，再重新開啟，確認訂單是否已經消失。',
+                '若還是未消失，請至**肚肚 LINE 群組**進行回報。'
+              ] },
+              { type: 'note', tone: 'amber', title: '複製以下內容回報肚肚群組', text: '按下「快速複製此段」後，切換至門市既有的肚肚 LINE 群組貼上送出，或直接按「傳送至 LINE 群組」。', copyText: '你訂有一筆訂單刪除不掉（已將 APP 滑掉重新開啟，仍未消失），麻煩協助處理，謝謝。' }
+            ]
+          },
+          {
+            id: 2006, category: '網路與連線', title: 'POS 機左下角雲朵亮紅怎麼辦？',
+            summary: '雲朵圖示亮紅，代表網路連線可能異常，請先依序重新啟動網路設備。',
+            keywords: '雲朵 亮紅 紅色 網路 數據機 分享器 小烏龜 ALM ALARM 中華電信',
+            images: [],
+            blocks: [
+              { type: 'steps', title: '處理步驟', items: [
+                '將**中華電信數據機**與**肚肚分享器**關閉電源約 **30 秒**，再重新開啟電源。',
+                '等待網路恢復後，平板 Wi-Fi 重新連線 **Dudoo5G**，確認雲朵圖示是否恢復正常。'
+              ] },
+              { type: 'note', tone: 'amber', title: '依舊亮紅？', text: '若雲朵仍然亮紅，請參考中華電信數據機的燈號說明。', jumpTitle: '中華電信數據機 ALM／ALARM 燈號異常', jumpLabel: '前往「中華電信數據機 ALM／ALARM 燈號異常」' }
+            ]
+          },
+          {
+            id: 2007, category: 'POS設定', title: '更換子機怎麼辦？',
+            summary: '需要更換子機時，請到肚肚 LINE 群組告知，由客服協助更換。',
+            keywords: '更換子機 子機 換機 裝置 數量 取消裝置 LINE 群組 客服',
+            images: [],
+            blocks: [
+              { type: 'steps', title: '處理方式', items: [
+                '請到**肚肚 LINE 群組**告知需要**更換子機**。',
+                '由**客服協助更換**。'
+              ] },
+              { type: 'note', tone: 'sky', title: '為什麼要請客服協助？', text: '更換前需要先**取消原本的裝置**，才會有裝置數量可以登入新的子機，因此需由客服處理。' },
+              { type: 'note', tone: 'amber', title: '複製以下內容回報肚肚群組', text: '按下「快速複製此段」後，切換至門市既有的肚肚 LINE 群組貼上送出，或直接按「傳送至 LINE 群組」。', copyText: '麻煩協助更換子機，謝謝。' }
+            ]
+          },
+          {
+            id: 2008, category: 'POS設定', title: '調整座位圖怎麼辦？',
+            summary: '需要調整 POS 機的座位圖設定時，請直接到肚肚 LINE 群組回報。',
+            keywords: '座位圖 座位 桌位 調整 POS 設定 群組 回報',
+            images: [],
+            blocks: [
+              { type: 'steps', title: '處理方式', items: [
+                '需要調整 POS 機的座位圖設定時，**請直接到肚肚 LINE 群組回報**。'
+              ] },
+              { type: 'note', tone: 'amber', title: '複製以下內容回報肚肚群組', text: '按下「快速複製此段」後，切換至門市既有的肚肚 LINE 群組貼上送出，或直接按「傳送至 LINE 群組」。', copyText: '麻煩協助調整門市座位圖設定，謝謝。' }
+            ]
+          },
+          {
+            id: 2009, category: '知識小補充', title: '顧客 Wi-Fi 與 POS 使用同一組，會有什麼影響？',
+            summary: '如果提供給顧客的 Wi-Fi 與肚肚 POS 使用的是同一組，可能影響網路流量與第三方串接進單的速度。',
+            keywords: '顧客 wifi 同一組 共用 流量 頻寬 第三方 串接 進單 速度 訪客',
+            images: [],
+            blocks: [
+              { type: 'note', tone: 'sky', title: '為什麼會影響？', text: '顧客連線會佔用同一組網路的流量，因此 **POS 上的運作**，以及**第三方串接進單的速度**，都可能受到影響。' },
+              { type: 'note', tone: 'amber', title: '建議', text: '提供給顧客的 Wi-Fi，建議與**肚肚 POS 使用的 Wi-Fi 分開設定**。' }
+            ]
           }
         ]);
 
@@ -1685,7 +1912,7 @@
           if (typeof v === 'string') out.push(v.replace(/\*\*/g, ''));
           else if (Array.isArray(v)) v.forEach(x => collectText(x, out));
           else if (v && typeof v === 'object') {
-            Object.entries(v).forEach(([k, x]) => { if (!['type', 'tone', 'img', 'w', 'cap', 'copyLabel', 'lineLabel'].includes(k)) collectText(x, out); });
+            Object.entries(v).forEach(([k, x]) => { if (!['type', 'tone', 'img', 'w', 'cap', 'copyLabel', 'lineLabel', 'url', 'linkLabel', 'jumpTitle', 'jumpLabel'].includes(k)) collectText(x, out); });
           }
           return out;
         };
@@ -2471,6 +2698,7 @@
           handleSearchSubmit, clearFaqSearch, exportToExcel, refreshDashboard, syncStatus, loginErrorMessage,
           equipmentExamples, selectedEquipment, selectEquipmentSearch, copiedGuideText, copyGuideText, guideCopyMessage, openLineShare,
           showPrintReminderTip, triggerPrintReminder, dismissPrintReminder,
+          fontSizeOptions, fontSizeKey, setFontSize, uniqueViewers, viewersExpanded, jumpToTitle,
           formatDateOnly, formatTimeOnly
         };
       }
