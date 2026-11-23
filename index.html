@@ -1952,13 +1952,12 @@
             images: [],
             blocks: [
               { type: 'steps', title: '檢查並清除不使用的 Wi-Fi', items: [
-                { text: '開啟手機的「設定」→「Wi-Fi」，先確認目前連線的是 **Dudoo_5G**。', img: IMG.wifiList, cap: 'Wi-Fi 清單：確認目前連線的網路是 Dudoo_5G', w: 360 },
-                '往下查看「我的網路」及「其他網路」，找出已經不使用的 Wi-Fi。',
-                '點選不使用的 Wi-Fi 右側 **ⓘ**，進入該網路的設定頁。',
-                { text: '點選「**忘記此網路設定**」，將不再使用的 Wi-Fi 移除。', img: IMG.wifiDetails, cap: 'Wi-Fi 詳細設定：點選「忘記此網路設定」', w: 360 },
-                '將不使用的 Wi-Fi 逐一清除後，重新連線 **Dudoo_5G**，再確認連線是否穩定。'
+                '開啟手機的「設定」→「Wi-Fi」，先確認目前連線的是 **Dudoo_5G**。', 
+                { text: '查看「我的網路」，清除其他的Wi-Fi。',img: IMG.wifiList,  w: 360 },
+                '點選要清除的 Wi-Fi 右側 **ⓘ**此符號。',
+                { text: '點選「**忘記此網路設定**」。', img: IMG.wifiDetails, cap: 'Wi-Fi 詳細設定：點選「忘記此網路設定」', w: 360 }
+                
               ] },
-              { type: 'note', tone: 'amber', title: '小提醒', text: '請確認要移除的是不再使用的網路，不要把門市目前使用的 **Dudoo_5G** 忘記或刪除。' }
             ]
           },
           {
