@@ -869,7 +869,7 @@
           <i class="fa-solid fa-xmark"></i>
         </button>
         <div class="mb-1 flex items-center gap-2 font-bold text-orange-700"><span class="flex h-7 w-7 items-center justify-center rounded-full bg-orange-100"><i class="fa-solid fa-bell"></i></span>小提醒</div>
-        <p class="text-xs leading-relaxed">出單設定需要調整嗎？請至<strong class="text-orange-700">肚肚群組</strong>回報需要調整的內容喔！</p>
+        <p class="text-xs leading-relaxed"><strong class="text-green-700">出單設定/掃碼設定需要調整</strong>  請直接到<strong class="text-blue-700">肚肚群組</strong>回報需要調整的內容喔！</p>
         <span class="absolute -bottom-1.5 right-5 h-3 w-3 rotate-45 border-b border-r border-orange-200 bg-white"></span>
       </div>
       <button type="button" @click="triggerPrintReminder" aria-label="開啟出單設定提醒" title="出單設定提醒"
@@ -1530,7 +1530,6 @@
           },
           {
             id: 5, category: '掃碼點餐', title: '掃碼點餐停售商品',
-            summary: '從菜單切換到掃碼點餐版本，再進入商品設定停售。',
             keywords: '掃碼點餐 停售 商品 菜單 價格 長按',
             images: [],
             blocks: [
@@ -1589,7 +1588,6 @@
           ,
           {
             id: 9, category: '你訂設定', title: '你訂黑名單：手動接單與自動接單的差異',
-            summary: '設定黑名單後，是否仍會自動接單，取決於門市目前的接單模式。',
             keywords: '你訂 黑名單 手動接單 自動接單 不接單 封鎖會員', images: [],
             blocks: [
               { type: 'cases', title: '依門市接單模式判斷', cases: [
@@ -1612,15 +1610,15 @@
             ]
           },
           {
-            id: 11, category: '掃碼點餐', title: '掃碼點餐沒有菜單怎麼辦？',
+            id: 11, category: '掃碼點餐', title: '掃碼點餐沒有菜單',
             keywords: '掃碼點餐 沒有菜單 菜單不見 更新小鈴鐺 補發 小鈴鐺', images: [],
             blocks: [
               { type: 'steps', items: [
-                '先確認掃碼點餐是否有出現**更新小鈴鐺**。',
-                '若有更新小鈴鐺，請先執行更新，完成後確認菜單是否恢復。',
-                '若沒有更新小鈴鐺，請將下方文字複製並傳至肚肚群組，請專員協助補發。'
+                '先確認POS機上是否有出現**小鈴鐺**。',
+                '若**有**小鈴鐺，請先執行更新，完成後確認菜單是否恢復。',
+                '若**沒有**小鈴鐺，請將下方文字傳至肚肚群組，請客服協助補發。'
               ] },
-              { type: 'note', tone: 'amber', title: '複製以下內容回報肚肚群組', text: '按下「快速複製此段」後，切換至門市既有的肚肚 LINE 群組貼上送出，或直接按「傳送至 LINE 群組」。', copyText: '掃碼點餐無菜單，也無顯示更新小鈴鐺，麻煩幫我補發小鈴鐺。' }
+              { type: 'note', tone: 'amber', title: '傳送內容', text: '按下「快速複製此段」後，切換至門市既有的肚肚 LINE 群組貼上送出，或直接按「傳送至 LINE 群組」。', copyText: '掃碼點餐無菜單，也無顯示更新小鈴鐺，麻煩幫我補發小鈴鐺。' }
             ]
           },
           {
@@ -1638,8 +1636,7 @@
           },
 
           {
-            id: 14, category: '支付設定', title: '申請 LINE Pay 支付別',
-            summary: '收到 LINE Pay 金鑰後，才能協助進行 POS 串接。',
+            id: 14, category: '支付設定', title: '申請 串接 LINE Pay 付款別',
             keywords: 'LINE PAY LINEPAY 支付別 金鑰 串接 申請', images: [],
             blocks: [
               { type: 'steps', items: [ '先向 LINE Pay 申請所需金鑰。', '將取得的金鑰寄送至總部提供的指定 Gmail 信箱。', '總部收到金鑰後，將協助進行 POS 串接。' ] },
@@ -1647,7 +1644,7 @@
             ]
           },
           {
-            id: 15, category: '支付設定', title: '申請街口支付支付別',
+            id: 15, category: '支付設定', title: '申請 串接 街口支付 付款別',
             summary: '請至門市既有的肚肚 LINE 群組提出 POS 串接需求。',
             keywords: '街口支付 JKO PAY 支付別 串接 申請', images: [],
             blocks: [
@@ -1765,22 +1762,23 @@
               { type: 'note', tone: 'sky', title: '為什麼預設沒有開放？', text: '是為了避免消費者透過自行備註，輸入原本需要額外付費的品項或附加客製內容，造成店家損失或混淆。例如客人備註「加蛋」，但因為是自行備註，系統沒有加收加蛋費用，導致店家少收款。' },
               { type: 'image', img: IMG.receiptNote, cap: '示意圖' },
               { type: 'note', tone: 'amber', title: '您已確認了解以上的狀況並且同意開啟嗎？', text: '若您已確認並且同意，請至肚肚LINE群組告知：您已確認了解開啟掃碼點餐備註會出現的狀況，並且同意開啟掃碼點餐備註，再麻煩協助開啟此功能。', copyText: '我已確認了解開啟掃碼點餐備註會出現的狀況，並且同意開啟掃碼點餐備註，再麻煩協助開啟此功能。' }
-            ]
+          ]
           }
 
           ,
           {
-            id: 20, category: '網路與連線', title: '連接肚肚 5G 後仍會跳掉，如何刪除其他 Wi-Fi？',
-            summary: '連接肚肚 5G 後仍會跳掉，需檢查並刪除裝置內其他不使用的 Wi-Fi。',
-            keywords: '肚肚 5G WIFI Wi-Fi 跳掉 斷線 刪除其他無線網路 網路切換',
+            id: 20, category: '網路與連線', title: '連Dudoo 5G Wi-Fi會跳掉',
+            summary: '連接Dudoo 5G 後會跳掉，需檢查並刪除裝置內其他不使用的 Wi-Fi。',
+            keywords: '肚肚 5G WIFI Wi-Fi 跳掉 斷線 Dudoo5G Dudoo Dudoo_5G 刪除其他無線網路 網路切換',
             images: [],
             blocks: [
                 { type: 'steps', items: [
                 '到**設定的Wi-Fi**。',
-                '點右邊ⓘ',
-                '忘記此網路設定'
+                '確認目前已是連接Dudoo 5G',
+                '將**我的網路**其餘連過的Wi-Fi全部清除',
+                '點選右邊ⓘ',
+                '點選**忘記此網路設定**'
               ] },
-              { type: 'note', tone: 'amber', title: '注意', text: '盡量讓我的網路剩下DudOO_5G' }
             ]
           },
           {
@@ -2263,12 +2261,9 @@
           },
           {
             id: 17, category: '掃碼點餐', title: '掃碼點餐外帶可以開啟 LINE Pay 嗎？',
-            symptom: '外帶掃碼點餐目前沒有開啟線上支付功能。',
             keywords: '掃碼點餐 外帶 LINE Pay LINEPAY 線上支付 取餐單號 付款',
             steps: [
-              '目前外帶掃碼點餐**沒有開啟線上支付功能**。',
-              '原因是測試時，客人手機畫面與 POS 都沒有明顯的取餐單號；客人付款後，門市可能無法辨識或找到對應客人。',
-              '若門市已了解這項問題、確認可以自行排除，且仍希望開啟，請到**肚肚群組說明**，再由支援窗口協助。'
+              '目前外帶掃碼點餐**沒有開啟線上支付功能**。因是測試時，客人手機畫面與 POS 都沒有明顯的取餐單號；客人付款後，門市可能無法辨識或找到對應客人。  若門市已了解這項問題、確認可以自行排除，且仍希望開啟，請到**肚肚群組說明**，再由支援窗口協助。',
             ],
             extraNote: '不要在未確認取餐辨識方式前自行開啟外帶線上支付。'
           },
