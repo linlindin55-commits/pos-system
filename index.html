@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>門市操作教學｜故障排除</title>
+  <title>早安美芝城 X 肚肚POS系統 Q&A</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/vue@3.5.13/dist/vue.global.prod.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -507,7 +507,7 @@
       <div class="relative mb-4 flex gap-2">
         <div class="relative flex-1">
           <i class="fa-solid fa-magnifying-glass absolute left-3 top-3.5 text-slate-400"></i>
-          <input v-model="guideSearchQuery" @keyup.enter="handleGuideSearchSubmit" type="text" placeholder="搜尋操作教學或故障排除（例：更新、出單機卡紙、無法列印）" class="w-full pl-10 pr-10 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white text-sm">
+          <input v-model="guideSearchQuery" @keyup.enter="handleGuideSearchSubmit" type="text" placeholder="例：更新失敗、出單機卡紙、關帳" class="w-full pl-10 pr-10 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white text-sm">
           <button v-if="guideSearchQuery" @click="clearGuideSearch" type="button" aria-label="清除教學搜尋" title="清除搜尋" class="absolute right-2 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-700 cursor-pointer">
             <i class="fa-solid fa-xmark"></i>
           </button>
@@ -519,35 +519,19 @@
         <i class="fa-solid fa-triangle-exclamation"></i> 找不到「<strong>{{ guideSearchQuery }}</strong>」相關的操作教學。
       </div>
 
-      <div class="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none">
+      <div class="mb-4 flex items-center gap-2">
+      <div class="flex min-w-0 flex-1 gap-2 overflow-x-auto pb-2 scrollbar-none">
         <button @click="guideCategory = 'all'" :class="guideCategory === 'all' ? 'bg-slate-800 text-white' : 'bg-white text-slate-600 border'" class="px-3 py-1.5 rounded-full text-xs whitespace-nowrap shadow-sm cursor-pointer">全部教學</button>
         <button v-for="cat in guideCategories" :key="cat" @click="guideCategory = cat" :class="guideCategory === cat ? 'bg-slate-800 text-white' : 'bg-white text-slate-600 border'" class="px-3 py-1.5 rounded-full text-xs whitespace-nowrap shadow-sm cursor-pointer">{{ cat }}</button>
       </div>
-
-      <section v-if="guideSearchQuery.trim() && filteredGuideFaqs.length" class="mb-5">
-        <div class="mb-2 flex items-center justify-between gap-2">
-          <h2 class="text-xs font-bold text-slate-700"><i class="fa-solid fa-screwdriver-wrench mr-1 text-rose-600"></i>故障排除相關結果</h2>
-          <span class="rounded-full bg-rose-50 px-2 py-1 text-[10px] font-bold text-rose-700">{{ filteredGuideFaqs.length }} 個問題</span>
+        <div role="group" aria-label="版面配置" class="flex shrink-0 overflow-hidden rounded-full border border-slate-300 bg-white shadow-sm">
+          <button type="button" @click="layoutMode = 'list'" :aria-pressed="layoutMode === 'list'" title="清單排列" aria-label="清單排列" :class="layoutMode === 'list' ? 'bg-sky-100 text-sky-700' : 'text-slate-500 hover:bg-slate-50'" class="flex h-8 w-9 items-center justify-center transition cursor-pointer"><i class="fa-solid fa-bars"></i></button>
+          <button type="button" @click="layoutMode = 'grid'" :aria-pressed="layoutMode === 'grid'" title="方格排列" aria-label="方格排列" :class="layoutMode === 'grid' ? 'bg-sky-100 text-sky-700' : 'text-slate-500 hover:bg-slate-50'" class="flex h-8 w-9 items-center justify-center border-l border-slate-300 transition cursor-pointer"><i class="fa-solid fa-table-cells-large"></i></button>
         </div>
-        <div class="related-card-grid">
-          <article v-for="item in filteredGuideFaqs" :key="'faq-' + item.id" role="button" tabindex="0"
-            @click="openTroubleshooting(item)" @keyup.enter="openTroubleshooting(item)"
-            class="rounded-xl border border-rose-100 bg-white p-3.5 shadow-sm hover:border-rose-300 hover:bg-rose-50/30 transition cursor-pointer">
-            <span class="chip" :style="catStyle(item.category)">{{ item.category }}</span>
-            <span v-if="item.common" :class="item._kind === 'guide' ? 'common-badge-guide' : 'common-badge-faq'" class="common-badge ml-1.5">{{ item._kind === 'guide' ? '常見教學' : '常見問題' }}</span>
-            <h3 class="card-title mt-1.5 text-slate-800" v-html="hl(item.title, guideSearchQuery)"></h3>
-            <p v-if="item.symptom" class="faq-card-summary mt-1 text-slate-500">{{ item.symptom }}</p>
-            <span class="card-action-label text-rose-600">查看排除方式 <i class="fa-solid fa-chevron-right"></i></span>
-          </article>
-        </div>
-      </section>
-
-      <div class="mb-3 flex items-center justify-end">
-      <div role="group" aria-label="版面配置" class="inline-flex overflow-hidden rounded-full border border-slate-300 bg-white shadow-sm">
-        <button type="button" @click="layoutMode = 'list'" :aria-pressed="layoutMode === 'list'" title="清單排列" aria-label="清單排列" :class="layoutMode === 'list' ? 'bg-sky-100 text-sky-700' : 'text-slate-500 hover:bg-slate-50'" class="flex h-8 w-11 items-center justify-center transition cursor-pointer"><i class="fa-solid fa-bars"></i></button>
-        <button type="button" @click="layoutMode = 'grid'" :aria-pressed="layoutMode === 'grid'" title="方格排列" aria-label="方格排列" :class="layoutMode === 'grid' ? 'bg-sky-100 text-sky-700' : 'text-slate-500 hover:bg-slate-50'" class="flex h-8 w-11 items-center justify-center border-l border-slate-300 transition cursor-pointer"><i class="fa-solid fa-table-cells-large"></i></button>
       </div>
-    </div>
+
+
+    <h2 v-if="guideSearchQuery.trim() && filteredGuides.length" class="mb-2 text-xs font-bold text-slate-700"><i class="fa-solid fa-book-open mr-1 text-orange-600"></i>操作教學相關結果</h2>
     <div class="guide-card-grid" :class="layoutMode === 'grid' ? 'layout-grid' : ''">
         <article v-for="item in filteredGuides" :key="item.id" :style="catStyle(item.category)" role="button" tabindex="0" @click="openGuide(item)" @keyup.enter="openGuide(item)" class="card-accent w-full min-w-0 bg-white p-4 rounded-xl border border-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-300 transition cursor-pointer">
           <div class="flex items-start gap-3">
@@ -562,6 +546,23 @@
           </div>
         </article>
       </div>
+
+      <section v-if="guideSearchQuery.trim() && filteredGuideFaqs.length" class="mt-6">
+        <div class="mb-2">
+          <h2 class="text-xs font-bold text-slate-700"><i class="fa-solid fa-screwdriver-wrench mr-1 text-rose-600"></i>故障排除相關結果</h2>
+        </div>
+        <div class="related-card-grid">
+          <article v-for="item in filteredGuideFaqs" :key="'faq-' + item.id" role="button" tabindex="0"
+            @click="openTroubleshooting(item)" @keyup.enter="openTroubleshooting(item)"
+            class="rounded-xl border border-rose-100 bg-white p-3.5 shadow-sm hover:border-rose-300 hover:bg-rose-50/30 transition cursor-pointer">
+            <span class="chip" :style="catStyle(item.category)">{{ item.category }}</span>
+            <span v-if="item.common" :class="item._kind === 'guide' ? 'common-badge-guide' : 'common-badge-faq'" class="common-badge ml-1.5">{{ item._kind === 'guide' ? '常見教學' : '常見問題' }}</span>
+            <h3 class="card-title mt-1.5 text-slate-800" v-html="hl(item.title, guideSearchQuery)"></h3>
+            <p v-if="item.symptom" class="faq-card-summary mt-1 text-slate-500">{{ item.symptom }}</p>
+            <span class="card-action-label text-rose-600">查看排除方式 <i class="fa-solid fa-chevron-right"></i></span>
+          </article>
+        </div>
+      </section>
     </main>
 
 
@@ -610,7 +611,7 @@
       <div class="relative mb-4 flex gap-2">
         <div class="relative flex-1">
           <i class="fa-solid fa-magnifying-glass absolute left-3 top-3.5 text-slate-400"></i>
-          <input v-model="searchQuery" @input="selectedEquipment = ''" @keyup.enter="handleSearchSubmit" type="text" placeholder="搜尋故障排除或操作教學（例：出單機、開啟自動清桌、更新）" class="w-full pl-10 pr-10 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white text-sm">
+          <input v-model="searchQuery" @input="selectedEquipment = ''" @keyup.enter="handleSearchSubmit" type="text" placeholder="例：出單機、開啟自動清桌、更新" class="w-full pl-10 pr-10 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white text-sm">
           <button v-if="searchQuery" @click="clearFaqSearch" type="button" aria-label="清除問題搜尋" title="清除搜尋" class="absolute right-2 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-700 cursor-pointer">
             <i class="fa-solid fa-xmark"></i>
           </button>
@@ -626,10 +627,39 @@
         <template v-else>找不到與「<strong>{{ searchQuery }}</strong>」相關的故障排除或操作教學。</template>
       </div>
 
-      <section v-if="searchQuery.trim() && filteredFaqGuides.length" class="mb-5">
-        <div class="mb-2 flex items-center justify-between gap-2">
+
+      <div class="mb-4 flex items-center gap-2">
+      <div class="flex min-w-0 flex-1 gap-2 overflow-x-auto pb-2 scrollbar-none">
+        <button @click="selectedCategory = 'all'" :class="selectedCategory === 'all' ? 'bg-slate-800 text-white' : 'bg-white text-slate-600 border'" class="px-3 py-1.5 rounded-full text-xs whitespace-nowrap shadow-sm cursor-pointer">全部問題</button>
+        <button v-for="cat in categories" :key="cat" @click="selectedCategory = cat" :class="selectedCategory === cat ? 'bg-slate-800 text-white' : 'bg-white text-slate-600 border'" class="px-3 py-1.5 rounded-full text-xs whitespace-nowrap shadow-sm cursor-pointer">{{ cat }}</button>
+      </div>
+        <div role="group" aria-label="版面配置" class="flex shrink-0 overflow-hidden rounded-full border border-slate-300 bg-white shadow-sm">
+          <button type="button" @click="layoutMode = 'list'" :aria-pressed="layoutMode === 'list'" title="清單排列" aria-label="清單排列" :class="layoutMode === 'list' ? 'bg-sky-100 text-sky-700' : 'text-slate-500 hover:bg-slate-50'" class="flex h-8 w-9 items-center justify-center transition cursor-pointer"><i class="fa-solid fa-bars"></i></button>
+          <button type="button" @click="layoutMode = 'grid'" :aria-pressed="layoutMode === 'grid'" title="方格排列" aria-label="方格排列" :class="layoutMode === 'grid' ? 'bg-sky-100 text-sky-700' : 'text-slate-500 hover:bg-slate-50'" class="flex h-8 w-9 items-center justify-center border-l border-slate-300 transition cursor-pointer"><i class="fa-solid fa-table-cells-large"></i></button>
+        </div>
+      </div>
+
+      <div v-if="filteredFaqs.length === 0 && !searchQuery.trim()" class="bg-white p-8 rounded-xl border border-slate-200 text-center text-slate-400 text-xs shadow-sm">
+        <i class="fa-solid fa-folder-open text-3xl mb-2"></i>
+        <p>此分類目前還沒有故障排除項目</p>
+      </div>
+
+    <h2 v-if="searchQuery.trim() && filteredFaqs.length" class="mb-2 text-xs font-bold text-slate-700"><i class="fa-solid fa-screwdriver-wrench mr-1 text-rose-600"></i>故障排除相關結果</h2>
+    <div class="faq-card-grid" :class="layoutMode === 'grid' ? 'layout-grid' : ''">
+        <div v-for="item in filteredFaqs" :key="item.id" :style="catStyle(item.category)" role="button" tabindex="0" @click="openTroubleshooting(item)" @keyup.enter="openTroubleshooting(item)" class="card-accent w-full min-w-0 bg-white p-4 rounded-xl border border-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-300 transition cursor-pointer">
+          <span class="chip" :style="catStyle(item.category)"><i :class="catMeta(item.category).icon" class="mr-1"></i>{{ item.category }}</span>
+          <span v-if="item.common" :class="item._kind === 'guide' ? 'common-badge-guide' : 'common-badge-faq'" class="common-badge ml-1.5">{{ item._kind === 'guide' ? '常見教學' : '常見問題' }}</span>
+          <h3 class="card-title text-slate-800 mt-2 mb-1" v-html="hl(item.title, searchQuery)"></h3>
+          <p v-if="item.symptom" class="faq-card-summary text-slate-500 line-clamp-2">
+            <i class="fa-solid fa-circle-exclamation text-rose-400 mr-0.5"></i>{{ item.symptom }}
+          </p>
+          <span class="card-action-label text-rose-600">查看處理方式 <i class="fa-solid fa-chevron-right"></i></span>
+        </div>
+      </div>
+
+      <section v-if="searchQuery.trim() && filteredFaqGuides.length" class="mt-6">
+        <div class="mb-2">
           <h2 class="text-xs font-bold text-slate-700"><i class="fa-solid fa-book-open mr-1 text-orange-600"></i>操作教學相關結果</h2>
-          <span class="rounded-full bg-orange-50 px-2 py-1 text-[10px] font-bold text-orange-700">{{ filteredFaqGuides.length }} 個教學</span>
         </div>
         <div class="related-card-grid">
           <article v-for="item in filteredFaqGuides" :key="'guide-' + item.id" role="button" tabindex="0"
@@ -643,34 +673,6 @@
           </article>
         </div>
       </section>
-
-      <div class="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none">
-        <button @click="selectedCategory = 'all'" :class="selectedCategory === 'all' ? 'bg-slate-800 text-white' : 'bg-white text-slate-600 border'" class="px-3 py-1.5 rounded-full text-xs whitespace-nowrap shadow-sm cursor-pointer">全部問題</button>
-        <button v-for="cat in categories" :key="cat" @click="selectedCategory = cat" :class="selectedCategory === cat ? 'bg-slate-800 text-white' : 'bg-white text-slate-600 border'" class="px-3 py-1.5 rounded-full text-xs whitespace-nowrap shadow-sm cursor-pointer">{{ cat }}</button>
-      </div>
-
-      <div v-if="filteredFaqs.length === 0 && !searchQuery.trim()" class="bg-white p-8 rounded-xl border border-slate-200 text-center text-slate-400 text-xs shadow-sm">
-        <i class="fa-solid fa-folder-open text-3xl mb-2"></i>
-        <p>此分類目前還沒有故障排除項目</p>
-      </div>
-
-      <div class="mb-3 flex items-center justify-end">
-      <div role="group" aria-label="版面配置" class="inline-flex overflow-hidden rounded-full border border-slate-300 bg-white shadow-sm">
-        <button type="button" @click="layoutMode = 'list'" :aria-pressed="layoutMode === 'list'" title="清單排列" aria-label="清單排列" :class="layoutMode === 'list' ? 'bg-sky-100 text-sky-700' : 'text-slate-500 hover:bg-slate-50'" class="flex h-8 w-11 items-center justify-center transition cursor-pointer"><i class="fa-solid fa-bars"></i></button>
-        <button type="button" @click="layoutMode = 'grid'" :aria-pressed="layoutMode === 'grid'" title="方格排列" aria-label="方格排列" :class="layoutMode === 'grid' ? 'bg-sky-100 text-sky-700' : 'text-slate-500 hover:bg-slate-50'" class="flex h-8 w-11 items-center justify-center border-l border-slate-300 transition cursor-pointer"><i class="fa-solid fa-table-cells-large"></i></button>
-      </div>
-    </div>
-    <div class="faq-card-grid" :class="layoutMode === 'grid' ? 'layout-grid' : ''">
-        <div v-for="item in filteredFaqs" :key="item.id" :style="catStyle(item.category)" role="button" tabindex="0" @click="openTroubleshooting(item)" @keyup.enter="openTroubleshooting(item)" class="card-accent w-full min-w-0 bg-white p-4 rounded-xl border border-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-300 transition cursor-pointer">
-          <span class="chip" :style="catStyle(item.category)"><i :class="catMeta(item.category).icon" class="mr-1"></i>{{ item.category }}</span>
-          <span v-if="item.common" :class="item._kind === 'guide' ? 'common-badge-guide' : 'common-badge-faq'" class="common-badge ml-1.5">{{ item._kind === 'guide' ? '常見教學' : '常見問題' }}</span>
-          <h3 class="card-title text-slate-800 mt-2 mb-1" v-html="hl(item.title, searchQuery)"></h3>
-          <p v-if="item.symptom" class="faq-card-summary text-slate-500 line-clamp-2">
-            <i class="fa-solid fa-circle-exclamation text-rose-400 mr-0.5"></i>{{ item.symptom }}
-          </p>
-          <span class="card-action-label text-rose-600">查看處理方式 <i class="fa-solid fa-chevron-right"></i></span>
-        </div>
-      </div>
     </main>
 
     <!-- 3. 後台：全店熱門排行（獨立頁面） -->
@@ -1593,7 +1595,7 @@
         };
 
         const logoutStore = () => {
-          const confirmLogout = confirm('⚠️ 確定要登出當前使用者 / 門市嗎？');
+          const confirmLogout = confirm('⚠️ 確定要登出當前門市嗎？');
           if (!confirmLogout) return;
           sendLeave();
           onlineViewers.value = [];
@@ -1632,7 +1634,7 @@
           '異常狀況': { icon: 'fa-solid fa-triangle-exclamation', c: '#BE123C', s: '#FFE4E6' },
           '網路與連線': { icon: 'fa-solid fa-wifi', c: '#0369A1', s: '#E0F2FE' },
           '掃碼點餐': { icon: 'fa-solid fa-qrcode', c: '#A21CAF', s: '#FAE8FF' },
-          '出單與印表機': { icon: 'fa-solid fa-print', c: '#4338CA', s: '#E0E7FF' },
+          '小白單與出單機': { icon: 'fa-solid fa-print', c: '#4338CA', s: '#E0E7FF' },
           '肚肚後台與菜單': { icon: 'fa-solid fa-utensils', c: '#475569', s: '#E2E8F0' },
           '平板設定': { icon: 'fa-solid fa-tablet-screen-button', c: '#92400E', s: '#FDE68A' },
           '知識小補充': { icon: 'fa-solid fa-lightbulb', c: '#A16207', s: '#FEF3C7' }
@@ -2127,7 +2129,7 @@
             ]
           },
           {
-            id: 2010, category: '出單與印表機', title: '單據介紹：廚房聯、點餐單、結帳單有什麼不同？',
+            id: 2010, category: '出單與出單機', title: '單據介紹：廚房聯、點餐單、結帳單有什麼不同？',
             summary: '三種單據的列印時機與內容不同，依照需要的資訊選擇對應的單據。',
             keywords: '單據 廚房聯 點餐單 結帳單 出單 列印 折扣 金額 付款別 顧客資訊 加點',
             images: [],
@@ -2399,19 +2401,6 @@
         // steps 內可用 **粗體** 標出要點；keywords 供搜尋用（不會顯示在畫面上）
         const faqs = ref([
           {
-            id: 1,
-            common: true,
-            category: '出單與印表機',
-            title: '小白單 / 出單機印不出來（或閃紅燈）',
-            symptom: '結帳後出單機完全沒反應，或者燈號持續閃爍紅燈。',
-            keywords: '小白單 出單機 印表機 紅燈 閃紅燈 不出單 沒反應 印不出來 紙捲 switch 網路交換器',
-            steps: [
-              '檢查印表機**蓋子是否關緊**，並確認**紙捲方向**沒有裝反（出紙流向朝下）。',
-              '查看 **Switch 網路交換器**與印表機後方**網線**的燈號是否有亮。',
-              '將出單機**電源關閉**，等待 10 秒後再重新開啟，試一次。'
-            ]
-          },
-          {
             id: 2,
             common: true,
             category: '網路與連線',
@@ -2420,7 +2409,7 @@
             steps: ['拍照回報**肚肚 LINE 群組**。', '**手動操作進單**。']
           },
           {
-            id: 4, category: '出單與印表機', title: '出單機切不斷紙／裁刀需要調整',
+            id: 4, category: '小白單與出單機', title: '出單機切不斷紙／裁刀需要調整',
             symptom: '出單後紙張沒有被切斷，或切到一半卡住。',
             keywords: '裁刀 切刀 切不斷 沒切斷 卡紙 調整 出單機 螺絲起子 小白單',
             steps: [
@@ -2430,7 +2419,7 @@
             ]
           },
           {
-            id: 5, category: '出單與印表機', title: '蓋子已蓋好，出單機仍閃紅燈（微動開關）',
+            id: 5, category: '小白單與出單機', title: '蓋子已蓋好，出單機仍閃紅燈（微動開關）',
             symptom: '上蓋明明蓋緊，出單機卻還是閃紅燈、不出單。',
             keywords: '微動開關 開關 紅燈 閃紅燈 蓋子 上蓋 感應 牙籤 出單機 不出單',
             steps: [
@@ -2442,7 +2431,7 @@
 ,
           {
             id: 7,
-            category: '出單與印表機',
+            category: '小白單與出單機',
             title: '出單機卡紙怎麼處理？',
             symptom: '依照影片示範處理卡紙，操作時避免硬拉紙張。',
             keywords: '出單機 卡紙 卡住 紙捲 撕紙 印表機',
@@ -2492,7 +2481,7 @@
             extraNote: 'Word 資料另註記可參考「10/31 前鎮草衙概念店」的教學。'
           },
           {
-            id: 14, category: '出單與印表機', title: '出單機列印模糊怎麼處理？',
+            id: 14, category: '小白單與出單機', title: '出單機列印模糊怎麼處理？',
             symptom: '出單內容字跡模糊、不清楚。',
             keywords: '出單模糊 列印模糊 字不清楚 印字頭 滾軸 酒精棉片 棉棒',
             steps: ['使用**酒精棉片**，或以**棉棒沾酒精**。', '針對出單機的**印字頭與滾軸處**進行清潔。', '清潔後再次列印，確認是否有改善。']
@@ -2504,7 +2493,7 @@
           },
           
           {
-            id: 18, category: '出單與印表機', title: '單台出單機一直無法連線怎麼辦？',
+            id: 18, category: '小白單與出單機', title: '單台出單機一直無法連線怎麼辦？',
             symptom: '店內只有其中一台出單機持續無法連線或無法正常出單。',
             keywords: '出單機 無法連線 單台 連線失敗 LOGO 自我檢測頁 IP IP位址 更改',
             steps: [
