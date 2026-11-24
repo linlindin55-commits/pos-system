@@ -386,17 +386,17 @@
           <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
             <i class="fa-solid fa-store"></i>
           </div>
-          <h2 class="text-lg font-bold text-slate-800">歡迎使用門市後援站</h2>
-          <p class="text-xs text-slate-500 mt-1">請輸入您的門市名稱與名字</p>
+          <h2 class="text-lg font-bold text-slate-800">歡迎使用早安美芝城 X 肚肚POS系統 Q&A</h2>
+          <p class="text-xs text-slate-500 mt-1">請輸入您的POS登入帳號密碼</p>
         </div>
         <div class="space-y-4">
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">門市名稱</label>
-            <input v-model="loginForm.storeName" @keyup.enter="loginStore" type="text" placeholder="例：台南南區概念店" class="w-full p-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-orange-500 outline-none bg-white">
+            <label class="block text-xs font-bold text-slate-600 mb-1">帳號</label>
+            <input v-model="loginForm.storeName" @keyup.enter="loginStore" type="text" placeholder="例：0000000" class="w-full p-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-orange-500 outline-none bg-white">
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">您的名字</label>
-            <input v-model="loginForm.reporter" @keyup.enter="loginStore" type="text" placeholder="例：陳店長" class="w-full p-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-orange-500 outline-none bg-white">
+            <label class="block text-xs font-bold text-slate-600 mb-1">密碼</label>
+            <input v-model="loginForm.reporter" @keyup.enter="loginStore" type="text" placeholder="例：000000" class="w-full p-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-orange-500 outline-none bg-white">
           </div>
           <p v-if="loginError && !showAdminLogin" class="text-xs text-rose-500 font-bold text-center">{{ loginErrorMessage }}</p>
           <button @click="loginStore" type="button" class="w-full bg-orange-600 hover:bg-orange-700 active:bg-orange-800 text-white font-bold py-3 rounded-lg shadow transition flex justify-center items-center gap-2 cursor-pointer">
@@ -435,7 +435,7 @@
       <div class="app-header-brand flex items-center gap-3 min-w-0">
         <span class="w-9 h-9 rounded-lg bg-orange-600 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-cash-register"></i></span>
         <div class="app-header-title-wrap min-w-0">
-          <h1 class="app-header-title text-base font-bold leading-[1.75] py-0.5 text-slate-900">門市操作教學與故障排除</h1>
+          <h1 class="app-header-title text-base font-bold leading-[1.75] py-0.5 text-slate-900">早安美芝城 X 肚肚POS系統 Q&A</h1>
           <p class="text-xs text-slate-500 truncate">{{ currentStore }}（{{ currentReporter }}）<span v-if="isAdmin" class="ml-1 rounded bg-amber-100 px-1.5 py-0.5 font-bold text-amber-800">管理者模式</span></p>
         </div>
       </div>
@@ -1596,7 +1596,7 @@
         };
         // 複製／傳送到 LINE 的完整內容：前面帶門市與回報人，後面註明來源。
         // 不需要時：把 COPY_SUFFIX 改成空字串，或讓 who 固定為空字串。
-        const COPY_SUFFIX = '（來自門市操作教學與故障排除網頁）';
+        const COPY_SUFFIX = '（來自早安美芝城 X 肚肚POS系統 Q&A 網頁）';
         const guideCopyMessage = (block) => {
           const who = [currentStore.value, currentReporter.value].filter(Boolean).join('｜');
           return (who ? '【' + who + '】\n' : '') + block.copyText + '\n' + COPY_SUFFIX;
